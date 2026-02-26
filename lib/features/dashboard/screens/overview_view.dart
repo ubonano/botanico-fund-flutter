@@ -12,16 +12,8 @@ class OverviewView extends StatelessWidget {
   Widget build(BuildContext context) {
     final fundRepo = locator<FundRepository>();
     final currencyFormat = NumberFormat.currency(locale: 'en_US', symbol: '\$');
-    final numberFormat = NumberFormat.currency(
-      locale: 'en_US',
-      symbol: '',
-      decimalDigits: 2,
-    );
-    final cryptoFormat = NumberFormat.currency(
-      locale: 'en_US',
-      symbol: '',
-      decimalDigits: 4,
-    );
+    final numberFormat = NumberFormat.currency(locale: 'en_US', symbol: '', decimalDigits: 2);
+    final cryptoFormat = NumberFormat.currency(locale: 'en_US', symbol: '', decimalDigits: 4);
 
     return Padding(
       padding: const EdgeInsets.all(24.0),
@@ -46,11 +38,7 @@ class OverviewView extends StatelessWidget {
                   SizedBox(height: 4),
                   Text(
                     'Visión global y métricas',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white54,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.white54, fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
@@ -75,11 +63,7 @@ class OverviewView extends StatelessWidget {
               stream: fundRepo.streamLatestSnapshot(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primaryGold,
-                    ),
-                  );
+                  return const Center(child: CircularProgressIndicator(color: AppColors.primaryGold));
                 }
 
                 if (snapshot.hasError) {
@@ -95,10 +79,7 @@ class OverviewView extends StatelessWidget {
 
                 if (fundState == null) {
                   return const Center(
-                    child: Text(
-                      'No hay información del fondo.',
-                      style: TextStyle(color: Colors.white54),
-                    ),
+                    child: Text('No hay información del fondo.', style: TextStyle(color: Colors.white54)),
                   );
                 }
 
@@ -112,12 +93,8 @@ class OverviewView extends StatelessWidget {
                         value: currencyFormat.format(fundState.totalValueUsd),
                         navTitle: 'NAV USD',
                         navValue: currencyFormat.format(fundState.navUsd),
-                        wbtcExposure: cryptoFormat.format(
-                          fundState.totalValueWbtc,
-                        ),
-                        wethExposure: cryptoFormat.format(
-                          fundState.totalValueWeth,
-                        ),
+                        wbtcExposure: cryptoFormat.format(fundState.totalValueWbtc),
+                        wethExposure: cryptoFormat.format(fundState.totalValueWeth),
                         icon: Icons.account_balance_wallet,
                         color: AppColors.primaryGold,
                       ),
@@ -125,10 +102,8 @@ class OverviewView extends StatelessWidget {
 
                       // DISTRIBUTION BAR
                       _buildDistributionBar(
-                        wbtcValue:
-                            fundState.inventoryWbtc * fundState.priceWbtc,
-                        wethValue:
-                            fundState.inventoryWeth * fundState.priceWeth,
+                        wbtcValue: fundState.inventoryWbtc * fundState.priceWbtc,
+                        wethValue: fundState.inventoryWeth * fundState.priceWeth,
                         usdtValue: 0,
                         polValue: 0,
                         currencyFormat: currencyFormat,
@@ -155,18 +130,11 @@ class OverviewView extends StatelessWidget {
                           _buildAssetCard(
                             title: 'Bitcoin',
                             subtitle: 'WBTC',
-                            inventory: cryptoFormat.format(
-                              fundState.inventoryWbtc,
-                            ),
-                            inventoryValueUsd:
-                                fundState.inventoryWbtc * fundState.priceWbtc,
+                            inventory: cryptoFormat.format(fundState.inventoryWbtc),
+                            inventoryValueUsd: fundState.inventoryWbtc * fundState.priceWbtc,
                             price: currencyFormat.format(fundState.priceWbtc),
-                            wallet: cryptoFormat.format(
-                              fundState.balanceWbtcWallet,
-                            ),
-                            pool: cryptoFormat.format(
-                              fundState.balanceWbtcPool,
-                            ),
+                            wallet: cryptoFormat.format(fundState.balanceWbtcWallet),
+                            pool: cryptoFormat.format(fundState.balanceWbtcPool),
                             icon: Icons.currency_bitcoin,
                             color: const Color(0xFFF7931A),
                             currencyFormat: currencyFormat,
@@ -174,18 +142,11 @@ class OverviewView extends StatelessWidget {
                           _buildAssetCard(
                             title: 'Ethereum',
                             subtitle: 'WETH',
-                            inventory: cryptoFormat.format(
-                              fundState.inventoryWeth,
-                            ),
-                            inventoryValueUsd:
-                                fundState.inventoryWeth * fundState.priceWeth,
+                            inventory: cryptoFormat.format(fundState.inventoryWeth),
+                            inventoryValueUsd: fundState.inventoryWeth * fundState.priceWeth,
                             price: currencyFormat.format(fundState.priceWeth),
-                            wallet: cryptoFormat.format(
-                              fundState.balanceWethWallet,
-                            ),
-                            pool: cryptoFormat.format(
-                              fundState.balanceWethPool,
-                            ),
+                            wallet: cryptoFormat.format(fundState.balanceWethWallet),
+                            pool: cryptoFormat.format(fundState.balanceWethPool),
                             icon: Icons.currency_exchange,
                             color: const Color(0xFF627EEA),
                             currencyFormat: currencyFormat,
@@ -228,35 +189,21 @@ class OverviewView extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderBadge(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildHeaderBadge(String title, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.surfaceDark,
         border: Border.all(color: AppColors.borderDark, width: 1.5),
         borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
+            decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
             child: Icon(icon, color: color, size: 16),
           ),
           const SizedBox(width: 12),
@@ -275,11 +222,7 @@ class OverviewView extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 value,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900),
               ),
             ],
           ),
@@ -310,12 +253,7 @@ class OverviewView extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
         boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.1),
-            blurRadius: 20,
-            spreadRadius: 2,
-            offset: const Offset(0, 8),
-          ),
+          BoxShadow(color: color.withValues(alpha: 0.1), blurRadius: 20, spreadRadius: 2, offset: const Offset(0, 8)),
         ],
       ),
       child: Column(
@@ -325,10 +263,7 @@ class OverviewView extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                ),
+                decoration: BoxDecoration(color: color.withValues(alpha: 0.15), shape: BoxShape.circle),
                 child: Icon(icon, color: color, size: 48),
               ),
               const SizedBox(width: 24),
@@ -413,21 +348,12 @@ class OverviewView extends StatelessWidget {
       children: [
         Text(
           'EQUIV. $token',
-          style: const TextStyle(
-            color: Colors.white54,
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
-          ),
+          style: const TextStyle(color: Colors.white54, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.2),
         ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: TextStyle(
-            color: color.withValues(alpha: 0.9),
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: color.withValues(alpha: 0.9), fontSize: 14, fontWeight: FontWeight.w600),
         ),
       ],
     );
@@ -460,25 +386,14 @@ class OverviewView extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.borderDark, width: 1),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 12,
-            offset: Offset(0, 4),
-          ),
-        ],
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 12, offset: Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'DISTRIBUCIÓN DEL FONDO',
-            style: TextStyle(
-              color: Colors.white54,
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-            ),
+            style: TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.2),
           ),
           const SizedBox(height: 16),
           // The bar
@@ -498,11 +413,7 @@ class OverviewView extends StatelessWidget {
                         child: fraction > 0.08
                             ? Text(
                                 '${(fraction * 100).toStringAsFixed(1)}%',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
                               )
                             : null,
                       ),
@@ -524,19 +435,12 @@ class OverviewView extends StatelessWidget {
                   Container(
                     width: 10,
                     height: 10,
-                    decoration: BoxDecoration(
-                      color: seg.color,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
+                    decoration: BoxDecoration(color: seg.color, borderRadius: BorderRadius.circular(3)),
                   ),
                   const SizedBox(width: 6),
                   Text(
                     '${seg.label}  ',
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     currencyFormat.format(seg.value),
@@ -574,20 +478,14 @@ class OverviewView extends StatelessWidget {
     final valueUsdFormatted = currencyFormat.format(inventoryValueUsd);
 
     return Container(
-      width: 400,
-      height: 270,
+      width: 440,
+      height: 297,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppColors.backgroundDark,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withValues(alpha: 0.15), width: 1.0),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: color.withValues(alpha: 0.08), blurRadius: 16, offset: const Offset(0, 8))],
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -608,10 +506,7 @@ class OverviewView extends StatelessWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
+                    decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
                     child: Icon(icon, color: color, size: 26),
                   ),
                   const SizedBox(width: 12),
@@ -656,11 +551,7 @@ class OverviewView extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       price,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -673,25 +564,16 @@ class OverviewView extends StatelessWidget {
               children: [
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.04),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.08),
-                      ),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.account_balance_wallet_outlined,
-                          color: Colors.white38,
-                          size: 14,
-                        ),
+                        Icon(Icons.account_balance_wallet_outlined, color: Colors.white38, size: 14),
                         const SizedBox(width: 6),
                         const Text(
                           'WALLET',
@@ -721,10 +603,7 @@ class OverviewView extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: color.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(10),
@@ -733,11 +612,7 @@ class OverviewView extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.water_drop_outlined,
-                          color: color.withValues(alpha: 0.6),
-                          size: 14,
-                        ),
+                        Icon(Icons.water_drop_outlined, color: color.withValues(alpha: 0.6), size: 14),
                         const SizedBox(width: 6),
                         Text(
                           'POOL',
@@ -800,7 +675,7 @@ class OverviewView extends StatelessWidget {
                         inventory,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 22,
+                          fontSize: 24,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 0.5,
                           fontFamily: 'monospace',
@@ -827,11 +702,7 @@ class OverviewView extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       valueUsdFormatted,
-                      style: TextStyle(
-                        color: color,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: TextStyle(color: color, fontSize: 20, fontWeight: FontWeight.w900),
                     ),
                   ],
                 ),
