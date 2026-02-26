@@ -53,7 +53,9 @@ class FundSnapshot extends FundState {
       lastUpdateTimestamp: data['last_update_timestamp'] != null
           ? (data['last_update_timestamp'] as Timestamp).toDate()
           : null,
-      timestamp: data['timestamp'] != null ? (data['timestamp'] as Timestamp).toDate() : null,
+      timestamp: data['timestamp'] != null
+          ? (data['timestamp'] as Timestamp).toDate()
+          : null,
       priceWeth: (data['price_weth'] ?? 0.0).toDouble(),
       priceWbtc: (data['price_wbtc'] ?? 0.0).toDouble(),
       balanceMaticWallet: (data['balance_matic_wallet'] ?? 0.0).toDouble(),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/fund_state.dart';
+import '../models/fund_snapshot.dart';
 import '../models/fund_config.dart';
 import '../models/investor.dart';
 import '../models/operation.dart';
@@ -45,5 +46,18 @@ class FundRepository {
         .map((snapshot) {
           return snapshot.docs.map((doc) => Operation.fromMap(doc.id, doc.data())).toList();
         });
+  }
+
+  // Stream for Latest Fund Snapshot
+  Stream<FundSnapshot?> streamLatestSnapshot() {
+    return _firestore.collection('snapshots').orderBy('timestamp', descending: true).limit(1).snapshots().map((
+      snapshot,
+    ) {
+      if (snapshot.docs.isNotEmpty) {
+        final doc = snapshot.docs.first;
+        return FundSnapshot.fromMap(doc.id, doc.data());
+      }
+      return null;
+    });
   }
 }

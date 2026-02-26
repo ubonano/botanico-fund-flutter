@@ -22,7 +22,11 @@ class InvestorsView extends StatelessWidget {
         children: [
           const Text(
             'Lista de Inversores',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
           const SizedBox(height: 24),
           Expanded(
@@ -30,7 +34,9 @@ class InvestorsView extends StatelessWidget {
               stream: fundRepo.streamInvestors(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(color: Color(0xFF10B981)));
+                  return const Center(
+                    child: CircularProgressIndicator(color: Color(0xFF10B981)),
+                  );
                 }
 
                 if (snapshot.hasError) {
@@ -46,7 +52,10 @@ class InvestorsView extends StatelessWidget {
 
                 if (investors == null || investors.isEmpty) {
                   return const Center(
-                    child: Text('No se encontraron inversores.', style: TextStyle(color: Colors.white54)),
+                    child: Text(
+                      'No se encontraron inversores.',
+                      style: TextStyle(color: Colors.white54),
+                    ),
                   );
                 }
 
@@ -60,24 +69,39 @@ class InvestorsView extends StatelessWidget {
 
                     return Column(
                       children: [
-                        if (investors.isNotEmpty && fundState != null && fundState.totalShares > 0)
+                        if (investors.isNotEmpty &&
+                            fundState != null &&
+                            fundState.totalShares > 0)
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 24,
+                                    horizontal: 16,
+                                  ),
                                   margin: const EdgeInsets.only(bottom: 24),
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
-                                      colors: [AppColors.surfaceDark, AppColors.backgroundDark],
+                                      colors: [
+                                        AppColors.surfaceDark,
+                                        AppColors.backgroundDark,
+                                      ],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     ),
                                     borderRadius: BorderRadius.circular(24),
-                                    border: Border.all(color: AppColors.borderDark, width: 1),
+                                    border: Border.all(
+                                      color: AppColors.borderDark,
+                                      width: 1,
+                                    ),
                                     boxShadow: const [
-                                      BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4)),
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 10,
+                                        offset: Offset(0, 4),
+                                      ),
                                     ],
                                   ),
                                   child: Column(
@@ -95,25 +119,42 @@ class InvestorsView extends StatelessWidget {
                                                 .map((entry) {
                                                   final index = entry.key;
                                                   final inv = entry.value;
-                                                  final percent = (inv.currentShares / fundState.totalShares) * 100;
+                                                  final percent =
+                                                      (inv.currentShares /
+                                                          fundState
+                                                              .totalShares) *
+                                                      100;
 
                                                   // Skip if shares are practically 0
                                                   if (inv.currentShares <= 0) {
-                                                    return PieChartSectionData(value: 0, radius: 0, title: '');
+                                                    return PieChartSectionData(
+                                                      value: 0,
+                                                      radius: 0,
+                                                      title: '',
+                                                    );
                                                   }
 
                                                   return PieChartSectionData(
-                                                    color: colors[index % colors.length],
+                                                    color:
+                                                        colors[index %
+                                                            colors.length],
                                                     value: inv.currentShares,
                                                     title:
                                                         '${inv.name.isNotEmpty ? inv.name : 'Desc.'}\n${percent.toStringAsFixed(1)}%',
                                                     radius: 75,
-                                                    titlePositionPercentageOffset: 0.55,
+                                                    titlePositionPercentageOffset:
+                                                        0.55,
                                                     titleStyle: const TextStyle(
                                                       fontSize: 11,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.white,
-                                                      shadows: [Shadow(color: Colors.black54, blurRadius: 4)],
+                                                      shadows: [
+                                                        Shadow(
+                                                          color: Colors.black54,
+                                                          blurRadius: 4,
+                                                        ),
+                                                      ],
                                                     ),
                                                   );
                                                 })
@@ -129,38 +170,60 @@ class InvestorsView extends StatelessWidget {
                               ),
                               const SizedBox(width: 24),
                               Expanded(
-                                child: Container(), // Espacio vacío por ahora como solicitó el usuario
+                                child:
+                                    Container(), // Espacio vacío por ahora como solicitó el usuario
                               ),
                             ],
                           ),
-                        if (investors.isNotEmpty && fundState != null && fundState.totalShares > 0)
+                        if (investors.isNotEmpty &&
+                            fundState != null &&
+                            fundState.totalShares > 0)
                           const SizedBox(height: 24),
                         Expanded(
                           child: ListView.separated(
                             itemCount: investors.length,
-                            separatorBuilder: (context, index) => const SizedBox(height: 16),
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 16),
                             itemBuilder: (context, index) {
                               final investor = investors[index];
-                              final currentValueUsd = investor.currentShares * currentNavUsd;
-                              final pnlNetoUsd = currentValueUsd - investor.netInvestmentUsd;
+                              final currentValueUsd =
+                                  investor.currentShares * currentNavUsd;
+                              final pnlNetoUsd =
+                                  currentValueUsd - investor.netInvestmentUsd;
                               final avgNavUsd = investor.currentShares > 0
-                                  ? investor.netInvestmentUsd / investor.currentShares
+                                  ? investor.netInvestmentUsd /
+                                        investor.currentShares
                                   : 0.0;
                               final colorTheme = colors[index % colors.length];
 
-                              final participation = fundState != null && fundState.totalShares > 0
-                                  ? (investor.currentShares / fundState.totalShares) * 100
+                              final participation =
+                                  fundState != null && fundState.totalShares > 0
+                                  ? (investor.currentShares /
+                                            fundState.totalShares) *
+                                        100
                                   : 0.0;
 
-                              final currencyFormat = NumberFormat.currency(locale: 'en_US', symbol: '\$');
-                              final sharesFormat = NumberFormat.currency(locale: 'en_US', symbol: '', decimalDigits: 2);
+                              final currencyFormat = NumberFormat.currency(
+                                locale: 'en_US',
+                                symbol: '\$',
+                              );
+                              final sharesFormat = NumberFormat.currency(
+                                locale: 'en_US',
+                                symbol: '',
+                                decimalDigits: 2,
+                              );
 
                               return InkWell(
                                 borderRadius: BorderRadius.circular(20),
                                 onTap: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => InvestorDetailScreen(investor: investor)),
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          InvestorDetailScreen(
+                                            investor: investor,
+                                          ),
+                                    ),
                                   );
                                 },
                                 child: Container(
@@ -168,21 +231,33 @@ class InvestorsView extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     color: AppColors.surfaceDark,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: colorTheme.withOpacity(0.3), width: 1.5),
+                                    border: Border.all(
+                                      color: colorTheme.withOpacity(0.3),
+                                      width: 1.5,
+                                    ),
                                     boxShadow: [
-                                      BoxShadow(color: colorTheme.withOpacity(0.05), blurRadius: 10, spreadRadius: 2),
+                                      BoxShadow(
+                                        color: colorTheme.withOpacity(0.05),
+                                        blurRadius: 10,
+                                        spreadRadius: 2,
+                                      ),
                                     ],
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
                                           CircleAvatar(
                                             radius: 24,
-                                            backgroundColor: colorTheme.withOpacity(0.2),
+                                            backgroundColor: colorTheme
+                                                .withOpacity(0.2),
                                             child: Text(
-                                              investor.name.isNotEmpty ? investor.name[0].toUpperCase() : '?',
+                                              investor.name.isNotEmpty
+                                                  ? investor.name[0]
+                                                        .toUpperCase()
+                                                  : '?',
                                               style: TextStyle(
                                                 color: colorTheme,
                                                 fontSize: 20,
@@ -193,17 +268,21 @@ class InvestorsView extends StatelessWidget {
                                           const SizedBox(width: 16),
                                           Expanded(
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  investor.name.isNotEmpty ? investor.name : investor.id,
+                                                  investor.name.isNotEmpty
+                                                      ? investor.name
+                                                      : investor.id,
                                                   style: const TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                   maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                                 const SizedBox(height: 4),
                                                 Text(
@@ -217,27 +296,37 @@ class InvestorsView extends StatelessWidget {
                                               ],
                                             ),
                                           ),
-                                          const Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 20),
+                                          const Icon(
+                                            Icons.arrow_forward_ios,
+                                            color: Colors.white24,
+                                            size: 20,
+                                          ),
                                         ],
                                       ),
                                       const SizedBox(height: 20),
                                       // Secciones de información secundaria
                                       Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Expanded(
                                             child: _buildMetricCol(
                                               icon: Icons.pie_chart_outline,
                                               label: 'Cuotapartes',
-                                              value: sharesFormat.format(investor.currentShares),
+                                              value: sharesFormat.format(
+                                                investor.currentShares,
+                                              ),
                                               color: Colors.white70,
                                             ),
                                           ),
                                           Expanded(
                                             child: _buildMetricCol(
-                                              icon: Icons.account_balance_wallet_outlined,
+                                              icon: Icons
+                                                  .account_balance_wallet_outlined,
                                               label: 'Inversión Neta',
-                                              value: currencyFormat.format(investor.netInvestmentUsd),
+                                              value: currencyFormat.format(
+                                                investor.netInvestmentUsd,
+                                              ),
                                               color: Colors.white70,
                                             ),
                                           ),
@@ -245,7 +334,9 @@ class InvestorsView extends StatelessWidget {
                                             child: _buildMetricCol(
                                               icon: Icons.show_chart,
                                               label: 'NAV Prom.',
-                                              value: currencyFormat.format(avgNavUsd),
+                                              value: currencyFormat.format(
+                                                avgNavUsd,
+                                              ),
                                               color: Colors.white70,
                                             ),
                                           ),
@@ -256,59 +347,94 @@ class InvestorsView extends StatelessWidget {
                                       Container(
                                         padding: const EdgeInsets.all(16),
                                         decoration: BoxDecoration(
-                                          color: AppColors.backgroundDark.withOpacity(0.6),
-                                          borderRadius: BorderRadius.circular(16),
+                                          color: AppColors.backgroundDark
+                                              .withOpacity(0.6),
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
                                           border: Border.all(
                                             color: pnlNetoUsd >= 0
-                                                ? AppColors.success.withOpacity(0.2)
-                                                : AppColors.error.withOpacity(0.2),
+                                                ? AppColors.success.withOpacity(
+                                                    0.2,
+                                                  )
+                                                : AppColors.error.withOpacity(
+                                                    0.2,
+                                                  ),
                                           ),
                                         ),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     const Text(
                                                       'Valor Actual',
-                                                      style: TextStyle(color: Colors.white54, fontSize: 13),
+                                                      style: TextStyle(
+                                                        color: Colors.white54,
+                                                        fontSize: 13,
+                                                      ),
                                                     ),
                                                     const SizedBox(height: 4),
                                                     Text(
-                                                      currencyFormat.format(currentValueUsd),
+                                                      currencyFormat.format(
+                                                        currentValueUsd,
+                                                      ),
                                                       style: const TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                                 Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 6,
+                                                      ),
                                                   decoration: BoxDecoration(
                                                     color: pnlNetoUsd >= 0
-                                                        ? AppColors.success.withOpacity(0.1)
-                                                        : AppColors.error.withOpacity(0.1),
-                                                    borderRadius: BorderRadius.circular(12),
+                                                        ? AppColors.success
+                                                              .withOpacity(0.1)
+                                                        : AppColors.error
+                                                              .withOpacity(0.1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
                                                   ),
                                                   child: Row(
                                                     children: [
                                                       Icon(
-                                                        pnlNetoUsd >= 0 ? Icons.arrow_upward : Icons.arrow_downward,
+                                                        pnlNetoUsd >= 0
+                                                            ? Icons.arrow_upward
+                                                            : Icons
+                                                                  .arrow_downward,
                                                         size: 14,
-                                                        color: pnlNetoUsd >= 0 ? AppColors.success : AppColors.error,
+                                                        color: pnlNetoUsd >= 0
+                                                            ? AppColors.success
+                                                            : AppColors.error,
                                                       ),
                                                       const SizedBox(width: 4),
                                                       Text(
                                                         '${(investor.roiUsd * 100).toStringAsFixed(2)}%',
                                                         style: TextStyle(
-                                                          color: pnlNetoUsd >= 0 ? AppColors.success : AppColors.error,
-                                                          fontWeight: FontWeight.bold,
+                                                          color: pnlNetoUsd >= 0
+                                                              ? AppColors
+                                                                    .success
+                                                              : AppColors.error,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                         ),
                                                       ),
                                                     ],
@@ -317,21 +443,33 @@ class InvestorsView extends StatelessWidget {
                                               ],
                                             ),
                                             const SizedBox(height: 12),
-                                            const Divider(color: Colors.white10, height: 1),
+                                            const Divider(
+                                              color: Colors.white10,
+                                              height: 1,
+                                            ),
                                             const SizedBox(height: 12),
                                             Row(
                                               children: [
-                                                const Icon(Icons.account_balance, size: 14, color: Colors.white54),
+                                                const Icon(
+                                                  Icons.account_balance,
+                                                  size: 14,
+                                                  color: Colors.white54,
+                                                ),
                                                 const SizedBox(width: 6),
                                                 const Text(
                                                   'Ganancia / Pérdida (PNL):',
-                                                  style: TextStyle(color: Colors.white54, fontSize: 13),
+                                                  style: TextStyle(
+                                                    color: Colors.white54,
+                                                    fontSize: 13,
+                                                  ),
                                                 ),
                                                 const Spacer(),
                                                 Text(
                                                   '${pnlNetoUsd >= 0 ? '+' : ''}${currencyFormat.format(pnlNetoUsd)}',
                                                   style: TextStyle(
-                                                    color: pnlNetoUsd >= 0 ? AppColors.success : AppColors.error,
+                                                    color: pnlNetoUsd >= 0
+                                                        ? AppColors.success
+                                                        : AppColors.error,
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -360,7 +498,12 @@ class InvestorsView extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricCol({required IconData icon, required String label, required String value, required Color color}) {
+  Widget _buildMetricCol({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
     return Container(
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.only(right: 8),
@@ -389,7 +532,11 @@ class InvestorsView extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             value,
-            style: TextStyle(color: color, fontSize: 15, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: color,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

@@ -29,10 +29,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
               iconTheme: const IconThemeData(color: Color(0xFFD4AF37)), // Gold
               title: const Text(
                 'Botánico Fund',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-      drawer: isDesktop ? null : Drawer(backgroundColor: const Color(0xFF18181B), child: _buildSidebarContent()),
+      drawer: isDesktop
+          ? null
+          : Drawer(
+              backgroundColor: const Color(0xFF18181B),
+              child: _buildSidebarContent(),
+            ),
       body: Row(
         children: [
           // Sidebar fijo solo en Desktop
@@ -42,7 +50,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               decoration: const BoxDecoration(
                 color: Color(0xFF18181B), // Zinc 900
                 border: Border(
-                  right: BorderSide(color: Color(0xFF27272A), width: 1), // Zinc 800
+                  right: BorderSide(
+                    color: Color(0xFF27272A),
+                    width: 1,
+                  ), // Zinc 800
                 ),
               ),
               child: _buildSidebarContent(),
@@ -65,19 +76,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
       children: [
         // Logo Area
         Padding(
-          padding: const EdgeInsets.only(top: 48.0, left: 24.0, right: 24.0, bottom: 40.0),
+          padding: const EdgeInsets.only(
+            top: 48.0,
+            left: 24.0,
+            right: 24.0,
+            bottom: 40.0,
+          ),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD4AF37).withOpacity(0.1), // Corrected from .withValues(alpha: 0.1)
+                  color: const Color(
+                    0xFFD4AF37,
+                  ).withOpacity(0.1), // Corrected from .withValues(alpha: 0.1)
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: const Color(0xFFD4AF37).withOpacity(0.3),
                   ), // Corrected from .withValues(alpha: 0.3)
                 ),
-                child: const Icon(Icons.spa, color: Color(0xFFD4AF37), size: 28), // Botánico icon in Gold
+                child: const Icon(
+                  Icons.spa,
+                  color: Color(0xFFD4AF37),
+                  size: 28,
+                ), // Botánico icon in Gold
               ),
               const SizedBox(width: 16),
               const Text(
@@ -101,14 +123,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
             alignment: Alignment.centerLeft,
             child: Text(
               'MENU PRINCIPAL',
-              style: TextStyle(color: Colors.white38, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5),
+              style: TextStyle(
+                color: Colors.white38,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+              ),
             ),
           ),
         ),
         const SizedBox(height: 16),
-        _buildNavItem(index: 0, icon: Icons.dashboard_outlined, selectedIcon: Icons.dashboard, label: 'Resumen'),
+        _buildNavItem(
+          index: 0,
+          icon: Icons.dashboard_outlined,
+          selectedIcon: Icons.dashboard,
+          label: 'Resumen',
+        ),
         const SizedBox(height: 8),
-        _buildNavItem(index: 1, icon: Icons.group_outlined, selectedIcon: Icons.group, label: 'Inversores'),
+        _buildNavItem(
+          index: 1,
+          icon: Icons.group_outlined,
+          selectedIcon: Icons.group,
+          label: 'Inversores',
+        ),
         const Spacer(),
 
         // Bottom Area (e.g. Settings / Info)
@@ -118,7 +155,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             children: [
               Icon(Icons.info_outline, color: Colors.white38, size: 16),
               SizedBox(width: 8),
-              Text('v1.0.0', style: TextStyle(color: Colors.white38, fontSize: 13)),
+              Text(
+                'v1.0.0',
+                style: TextStyle(color: Colors.white38, fontSize: 13),
+              ),
             ],
           ),
         ),
@@ -133,7 +173,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required String label,
   }) {
     final isSelected = _selectedIndex == index;
-    final color = isSelected ? const Color(0xFFD4AF37) : Colors.white60; // Gold or default
+    final color = isSelected
+        ? const Color(0xFFD4AF37)
+        : Colors.white60; // Gold or default
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -159,7 +201,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             border: Border.all(
               color: isSelected
                   ? const Color(0xFFD4AF37).withOpacity(0.3)
-                  : Colors.transparent, // Corrected from .withValues(alpha: 0.3)
+                  : Colors
+                        .transparent, // Corrected from .withValues(alpha: 0.3)
             ),
           ),
           child: Row(
@@ -183,7 +226,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   decoration: BoxDecoration(
                     color: const Color(0xFFD4AF37),
                     borderRadius: BorderRadius.circular(4),
-                    boxShadow: const [BoxShadow(color: Color(0xFFD4AF37), blurRadius: 4, spreadRadius: 1)],
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0xFFD4AF37),
+                        blurRadius: 4,
+                        spreadRadius: 1,
+                      ),
+                    ],
                   ),
                 ),
             ],

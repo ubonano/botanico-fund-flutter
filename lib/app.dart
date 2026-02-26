@@ -12,7 +12,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF09090B), // Fondo casi negro muy elegante (Zinc 950)
+        scaffoldBackgroundColor: const Color(
+          0xFF09090B,
+        ), // Fondo casi negro muy elegante (Zinc 950)
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFFD4AF37), // Oro Premium (Metallic Gold)
           secondary: Color(0xFFF43F5E), // Rose 500 - Soft Red
@@ -21,8 +23,14 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: 'Roboto', // Or inter/outfit if imported in pubspec
         textTheme: const TextTheme(
-          displayLarge: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-          displayMedium: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
+          displayLarge: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          displayMedium: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
           bodyLarge: TextStyle(color: Colors.white70),
           bodyMedium: TextStyle(color: Colors.white60),
         ),

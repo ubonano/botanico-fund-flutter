@@ -41,7 +41,9 @@ class Operation {
     return Operation(
       id: id,
       type: data['type'] ?? '',
-      timestamp: data['timestamp'] != null ? DateTime.tryParse(data['timestamp']) : null,
+      timestamp: data['timestamp'] != null
+          ? DateTime.tryParse(data['timestamp'])
+          : null,
       amountUsd: (data['amount_usd'] ?? 0.0).toDouble(),
       amountWbtc: (data['amount_wbtc'] ?? 0.0).toDouble(),
       amountWeth: (data['amount_weth'] ?? 0.0).toDouble(),

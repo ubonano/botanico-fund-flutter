@@ -35,12 +35,16 @@ class InvestorDetailScreen extends StatelessWidget {
                 final currentNavWeth = fundState?.navWeth ?? 0.0;
 
                 final currentValueUsd = investor.currentShares * currentNavUsd;
-                final currentValueWbtc = investor.currentShares * currentNavWbtc;
-                final currentValueWeth = investor.currentShares * currentNavWeth;
+                final currentValueWbtc =
+                    investor.currentShares * currentNavWbtc;
+                final currentValueWeth =
+                    investor.currentShares * currentNavWeth;
 
                 final pnlNetoUsd = currentValueUsd - investor.netInvestmentUsd;
-                final pnlNetoWbtc = currentValueWbtc - investor.netInvestmentWbtc;
-                final pnlNetoWeth = currentValueWeth - investor.netInvestmentWeth;
+                final pnlNetoWbtc =
+                    currentValueWbtc - investor.netInvestmentWbtc;
+                final pnlNetoWeth =
+                    currentValueWeth - investor.netInvestmentWeth;
 
                 return Container(
                   padding: const EdgeInsets.all(24),
@@ -53,10 +57,17 @@ class InvestorDetailScreen extends StatelessWidget {
                       children: [
                         const Text(
                           'Resumen',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                         const SizedBox(height: 16),
-                        _buildSummaryRow('Cuotapartes', investor.currentShares.toStringAsFixed(4)),
+                        _buildSummaryRow(
+                          'Cuotapartes',
+                          investor.currentShares.toStringAsFixed(4),
+                        ),
                         _buildSummaryRow(
                           'Participación %',
                           fundState != null && fundState.totalShares > 0
@@ -67,89 +78,145 @@ class InvestorDetailScreen extends StatelessWidget {
                         const Divider(color: Color(0xFF334155), height: 32),
                         const Text(
                           'Inversión Neta (Depositado)',
-                          style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(height: 8),
-                        _buildSummaryRow('USD', '\$${investor.netInvestmentUsd.toStringAsFixed(2)}'),
-                        _buildSummaryRow('WBTC', investor.netInvestmentWbtc.toStringAsFixed(8)),
-                        _buildSummaryRow('WETH', investor.netInvestmentWeth.toStringAsFixed(8)),
+                        _buildSummaryRow(
+                          'USD',
+                          '\$${investor.netInvestmentUsd.toStringAsFixed(2)}',
+                        ),
+                        _buildSummaryRow(
+                          'WBTC',
+                          investor.netInvestmentWbtc.toStringAsFixed(8),
+                        ),
+                        _buildSummaryRow(
+                          'WETH',
+                          investor.netInvestmentWeth.toStringAsFixed(8),
+                        ),
 
                         const Divider(color: Color(0xFF334155), height: 32),
                         const Text(
                           'NAV Promedio de Compra',
-                          style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(height: 8),
-                        _buildSummaryRow('NAV USD', '\$${investor.avgPurchaseNavUsd.toStringAsFixed(4)}'),
-                        _buildSummaryRow('NAV WBTC', investor.avgPurchaseNavWbtc.toStringAsFixed(8)),
-                        _buildSummaryRow('NAV WETH', investor.avgPurchaseNavWeth.toStringAsFixed(8)),
+                        _buildSummaryRow(
+                          'NAV USD',
+                          '\$${investor.avgPurchaseNavUsd.toStringAsFixed(4)}',
+                        ),
+                        _buildSummaryRow(
+                          'NAV WBTC',
+                          investor.avgPurchaseNavWbtc.toStringAsFixed(8),
+                        ),
+                        _buildSummaryRow(
+                          'NAV WETH',
+                          investor.avgPurchaseNavWeth.toStringAsFixed(8),
+                        ),
 
                         const Divider(color: Color(0xFF334155), height: 32),
                         const Text(
                           'ROI %',
-                          style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         _buildSummaryRow(
                           'ROI USD',
                           '${(investor.roiUsd * 100).toStringAsFixed(2)}%',
-                          color: investor.roiUsd >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                          color: investor.roiUsd >= 0
+                              ? const Color(0xFF10B981)
+                              : const Color(0xFFF43F5E),
                         ),
                         _buildSummaryRow(
                           'ROI WBTC',
                           '${(investor.roiWbtc * 100).toStringAsFixed(2)}%',
-                          color: investor.roiWbtc >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                          color: investor.roiWbtc >= 0
+                              ? const Color(0xFF10B981)
+                              : const Color(0xFFF43F5E),
                         ),
                         _buildSummaryRow(
                           'ROI WETH',
                           '${(investor.roiWeth * 100).toStringAsFixed(2)}%',
-                          color: investor.roiWeth >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                          color: investor.roiWeth >= 0
+                              ? const Color(0xFF10B981)
+                              : const Color(0xFFF43F5E),
                         ),
 
                         if (currentNavUsd > 0) ...[
                           const Divider(color: Color(0xFF334155), height: 32),
                           const Text(
                             'PNL No Realizado (Actual)',
-                            style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           _buildSummaryRow(
                             'USD',
                             '${pnlNetoUsd >= 0 ? '+' : ''}\$${pnlNetoUsd.toStringAsFixed(2)}',
-                            color: pnlNetoUsd >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                            color: pnlNetoUsd >= 0
+                                ? const Color(0xFF10B981)
+                                : const Color(0xFFF43F5E),
                           ),
                           _buildSummaryRow(
                             'WBTC',
                             '${pnlNetoWbtc >= 0 ? '+' : ''}${pnlNetoWbtc.toStringAsFixed(8)}',
-                            color: pnlNetoWbtc >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                            color: pnlNetoWbtc >= 0
+                                ? const Color(0xFF10B981)
+                                : const Color(0xFFF43F5E),
                           ),
                           _buildSummaryRow(
                             'WETH',
                             '${pnlNetoWeth >= 0 ? '+' : ''}${pnlNetoWeth.toStringAsFixed(8)}',
-                            color: pnlNetoWeth >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                            color: pnlNetoWeth >= 0
+                                ? const Color(0xFF10B981)
+                                : const Color(0xFFF43F5E),
                           ),
                         ],
 
                         const Divider(color: Color(0xFF334155), height: 32),
                         const Text(
                           'PNL Realizado Total',
-                          style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         _buildSummaryRow(
                           'USD',
                           '\$${investor.totalRealizedPnlUsd.toStringAsFixed(2)}',
-                          color: investor.totalRealizedPnlUsd >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                          color: investor.totalRealizedPnlUsd >= 0
+                              ? const Color(0xFF10B981)
+                              : const Color(0xFFF43F5E),
                         ),
                         _buildSummaryRow(
                           'WBTC',
                           investor.totalRealizedPnlWbtc.toStringAsFixed(8),
-                          color: investor.totalRealizedPnlWbtc >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                          color: investor.totalRealizedPnlWbtc >= 0
+                              ? const Color(0xFF10B981)
+                              : const Color(0xFFF43F5E),
                         ),
                         _buildSummaryRow(
                           'WETH',
                           investor.totalRealizedPnlWeth.toStringAsFixed(8),
-                          color: investor.totalRealizedPnlWeth >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                          color: investor.totalRealizedPnlWeth >= 0
+                              ? const Color(0xFF10B981)
+                              : const Color(0xFFF43F5E),
                         ),
                       ],
                     ),
@@ -168,20 +235,32 @@ class InvestorDetailScreen extends StatelessWidget {
                 children: [
                   const Text(
                     'Historial de Operaciones',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Expanded(
                     child: StreamBuilder<List<Operation>>(
                       stream: fundRepo.streamInvestorOperations(investor.id),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator(color: Color(0xFF10B981)));
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xFF10B981),
+                            ),
+                          );
                         }
 
                         if (snapshot.hasError) {
                           return Center(
-                            child: Text('Error: ${snapshot.error}', style: const TextStyle(color: Color(0xFFF43F5E))),
+                            child: Text(
+                              'Error: ${snapshot.error}',
+                              style: const TextStyle(color: Color(0xFFF43F5E)),
+                            ),
                           );
                         }
 
@@ -189,13 +268,17 @@ class InvestorDetailScreen extends StatelessWidget {
 
                         if (operations == null || operations.isEmpty) {
                           return const Center(
-                            child: Text('No hay operaciones.', style: TextStyle(color: Colors.white54)),
+                            child: Text(
+                              'No hay operaciones.',
+                              style: TextStyle(color: Colors.white54),
+                            ),
                           );
                         }
 
                         return ListView.separated(
                           itemCount: operations.length,
-                          separatorBuilder: (context, index) => const Divider(color: Color(0xFF334155)),
+                          separatorBuilder: (context, index) =>
+                              const Divider(color: Color(0xFF334155)),
                           itemBuilder: (context, index) {
                             final op = operations[index];
                             final isDeposit = op.type == 'DEPOSIT';
@@ -205,17 +288,29 @@ class InvestorDetailScreen extends StatelessWidget {
                                     ? const Color(0xFF10B981).withOpacity(0.2)
                                     : const Color(0xFFF43F5E).withOpacity(0.2),
                                 child: Icon(
-                                  isDeposit ? Icons.arrow_downward : Icons.arrow_upward,
-                                  color: isDeposit ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                                  isDeposit
+                                      ? Icons.arrow_downward
+                                      : Icons.arrow_upward,
+                                  color: isDeposit
+                                      ? const Color(0xFF10B981)
+                                      : const Color(0xFFF43F5E),
                                 ),
                               ),
                               title: Text(
                                 '${isDeposit ? 'Depósito' : 'Retiro'} \$${op.amountUsd.toStringAsFixed(2)}',
-                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               subtitle: Text(
-                                op.timestamp != null ? op.timestamp.toString() : 'Unknown date',
-                                style: const TextStyle(color: Colors.white54, fontSize: 12),
+                                op.timestamp != null
+                                    ? op.timestamp.toString()
+                                    : 'Unknown date',
+                                style: const TextStyle(
+                                  color: Colors.white54,
+                                  fontSize: 12,
+                                ),
                               ),
                               trailing: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -223,7 +318,10 @@ class InvestorDetailScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     'NAV: \$${op.navUsdApplied.toStringAsFixed(4)}',
-                                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 13,
+                                    ),
                                   ),
                                   Text(
                                     '${op.sharesOperated.toStringAsFixed(4)} Cuotapartes',
@@ -250,7 +348,11 @@ class InvestorDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryRow(String label, String value, {Color color = Colors.white}) {
+  Widget _buildSummaryRow(
+    String label,
+    String value, {
+    Color color = Colors.white,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
