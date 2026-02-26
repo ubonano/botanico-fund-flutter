@@ -52,15 +52,21 @@ class InvestorDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Summary',
+                          'Resumen',
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                         ),
                         const SizedBox(height: 16),
-                        _buildSummaryRow('Shares', investor.currentShares.toStringAsFixed(4)),
+                        _buildSummaryRow('Cuotapartes', investor.currentShares.toStringAsFixed(4)),
+                        _buildSummaryRow(
+                          'Participación %',
+                          fundState != null && fundState.totalShares > 0
+                              ? '${((investor.currentShares / fundState.totalShares) * 100).toStringAsFixed(2)}%'
+                              : '0.00%',
+                        ),
 
                         const Divider(color: Color(0xFF334155), height: 32),
                         const Text(
-                          'Net Investment (Invested)',
+                          'Inversión Neta (Depositado)',
                           style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 8),
@@ -70,7 +76,7 @@ class InvestorDetailScreen extends StatelessWidget {
 
                         const Divider(color: Color(0xFF334155), height: 32),
                         const Text(
-                          'Avg Purchase NAV',
+                          'NAV Promedio de Compra',
                           style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 8),
@@ -103,7 +109,7 @@ class InvestorDetailScreen extends StatelessWidget {
                         if (currentNavUsd > 0) ...[
                           const Divider(color: Color(0xFF334155), height: 32),
                           const Text(
-                            'Unrealized PNL (Current)',
+                            'PNL No Realizado (Actual)',
                             style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 8),
@@ -126,7 +132,7 @@ class InvestorDetailScreen extends StatelessWidget {
 
                         const Divider(color: Color(0xFF334155), height: 32),
                         const Text(
-                          'Total Realized PNL',
+                          'PNL Realizado Total',
                           style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 8),
@@ -161,7 +167,7 @@ class InvestorDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Operations History',
+                    'Historial de Operaciones',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                   const SizedBox(height: 16),
@@ -183,7 +189,7 @@ class InvestorDetailScreen extends StatelessWidget {
 
                         if (operations == null || operations.isEmpty) {
                           return const Center(
-                            child: Text('No operations found.', style: TextStyle(color: Colors.white54)),
+                            child: Text('No hay operaciones.', style: TextStyle(color: Colors.white54)),
                           );
                         }
 
@@ -204,7 +210,7 @@ class InvestorDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               title: Text(
-                                '${isDeposit ? 'Deposit' : 'Withdrawal'} \$${op.amountUsd.toStringAsFixed(2)}',
+                                '${isDeposit ? 'Depósito' : 'Retiro'} \$${op.amountUsd.toStringAsFixed(2)}',
                                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
@@ -220,7 +226,7 @@ class InvestorDetailScreen extends StatelessWidget {
                                     style: const TextStyle(color: Colors.white70, fontSize: 13),
                                   ),
                                   Text(
-                                    '${op.sharesOperated.toStringAsFixed(4)} Shares',
+                                    '${op.sharesOperated.toStringAsFixed(4)} Cuotapartes',
                                     style: const TextStyle(
                                       color: Color(0xFF10B981),
                                       fontSize: 13,
