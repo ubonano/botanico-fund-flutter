@@ -143,11 +143,10 @@ class InvestorsView extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: () {
-        Navigator.push(
+        InvestorDetailDialog.show(
           context,
-          MaterialPageRoute(
-            builder: (context) => InvestorDetailScreen(investor: investor),
-          ),
+          investor: investor,
+          colorTheme: colorTheme,
         );
       },
       child: Container(
