@@ -1,16 +1,1 @@
-{
-  "hosting": {
-    "public": "build/web",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  }
-}
+{"hosting":{"public":"build/web","ignore":["firebase.json","**/.*","**/node_modules/**"],"rewrites":[{"source":"**","destination":"/index.html"}]},"flutter":{"platforms":{"android":{"default":{"projectId":"botanico-fund","appId":"1:630105978932:android:c7e875f7a42a7c5c8d3261","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"botanico-fund","appId":"1:630105978932:ios:6b8fab730f3a03778d3261","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"botanico-fund","configurations":{"android":"1:630105978932:android:c7e875f7a42a7c5c8d3261","ios":"1:630105978932:ios:6b8fab730f3a03778d3261","web":"1:630105978932:web:d48e66b0af2e73f58d3261"}}}}}}

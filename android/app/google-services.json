@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "630105978932",
+    "project_id": "botanico-fund",
+    "storage_bucket": "botanico-fund.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:630105978932:android:c7e875f7a42a7c5c8d3261",
+        "android_client_info": {
+          "package_name": "com.example.botanico_fund_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGYHGmvcCls1ESTo30U6qbco7peKUdtEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
