@@ -3,6 +3,7 @@ import '../../../../core/config/locator.dart';
 import '../../../../core/services/fund_repository.dart';
 import '../../../../core/models/investor.dart';
 import '../../../../core/models/operation.dart';
+import '../../../../core/models/fund_state.dart';
 
 class InvestorDetailScreen extends StatelessWidget {
   final Investor investor;
@@ -25,39 +26,130 @@ class InvestorDetailScreen extends StatelessWidget {
           // Left Panel: Investor Summary
           Expanded(
             flex: 1,
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              decoration: const BoxDecoration(
-                border: Border(right: BorderSide(color: Color(0xFF334155))),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Summary',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+            child: StreamBuilder<FundState?>(
+              stream: fundRepo.streamCurrentFundState(),
+              builder: (context, snapshot) {
+                final fundState = snapshot.data;
+                final currentNavUsd = fundState?.navUsd ?? 0.0;
+                final currentNavWbtc = fundState?.navWbtc ?? 0.0;
+                final currentNavWeth = fundState?.navWeth ?? 0.0;
+
+                final currentValueUsd = investor.currentShares * currentNavUsd;
+                final currentValueWbtc = investor.currentShares * currentNavWbtc;
+                final currentValueWeth = investor.currentShares * currentNavWeth;
+
+                final pnlNetoUsd = currentValueUsd - investor.netInvestmentUsd;
+                final pnlNetoWbtc = currentValueWbtc - investor.netInvestmentWbtc;
+                final pnlNetoWeth = currentValueWeth - investor.netInvestmentWeth;
+
+                return Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: const BoxDecoration(
+                    border: Border(right: BorderSide(color: Color(0xFF334155))),
                   ),
-                  const SizedBox(height: 16),
-                  _buildSummaryRow('Shares', investor.currentShares.toStringAsFixed(4)),
-                  _buildSummaryRow('Net USD', '\$${investor.netInvestmentUsd.toStringAsFixed(2)}'),
-                  _buildSummaryRow(
-                    'ROI',
-                    '${(investor.roiUsd * 100).toStringAsFixed(2)}%',
-                    color: investor.roiUsd >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Summary',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildSummaryRow('Shares', investor.currentShares.toStringAsFixed(4)),
+
+                        const Divider(color: Color(0xFF334155), height: 32),
+                        const Text(
+                          'Net Investment (Invested)',
+                          style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 8),
+                        _buildSummaryRow('USD', '\$${investor.netInvestmentUsd.toStringAsFixed(2)}'),
+                        _buildSummaryRow('WBTC', investor.netInvestmentWbtc.toStringAsFixed(8)),
+                        _buildSummaryRow('WETH', investor.netInvestmentWeth.toStringAsFixed(8)),
+
+                        const Divider(color: Color(0xFF334155), height: 32),
+                        const Text(
+                          'Avg Purchase NAV',
+                          style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 8),
+                        _buildSummaryRow('NAV USD', '\$${investor.avgPurchaseNavUsd.toStringAsFixed(4)}'),
+                        _buildSummaryRow('NAV WBTC', investor.avgPurchaseNavWbtc.toStringAsFixed(8)),
+                        _buildSummaryRow('NAV WETH', investor.avgPurchaseNavWeth.toStringAsFixed(8)),
+
+                        const Divider(color: Color(0xFF334155), height: 32),
+                        const Text(
+                          'ROI %',
+                          style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 8),
+                        _buildSummaryRow(
+                          'ROI USD',
+                          '${(investor.roiUsd * 100).toStringAsFixed(2)}%',
+                          color: investor.roiUsd >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                        ),
+                        _buildSummaryRow(
+                          'ROI WBTC',
+                          '${(investor.roiWbtc * 100).toStringAsFixed(2)}%',
+                          color: investor.roiWbtc >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                        ),
+                        _buildSummaryRow(
+                          'ROI WETH',
+                          '${(investor.roiWeth * 100).toStringAsFixed(2)}%',
+                          color: investor.roiWeth >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                        ),
+
+                        if (currentNavUsd > 0) ...[
+                          const Divider(color: Color(0xFF334155), height: 32),
+                          const Text(
+                            'Unrealized PNL (Current)',
+                            style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 8),
+                          _buildSummaryRow(
+                            'USD',
+                            '${pnlNetoUsd >= 0 ? '+' : ''}\$${pnlNetoUsd.toStringAsFixed(2)}',
+                            color: pnlNetoUsd >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                          ),
+                          _buildSummaryRow(
+                            'WBTC',
+                            '${pnlNetoWbtc >= 0 ? '+' : ''}${pnlNetoWbtc.toStringAsFixed(8)}',
+                            color: pnlNetoWbtc >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                          ),
+                          _buildSummaryRow(
+                            'WETH',
+                            '${pnlNetoWeth >= 0 ? '+' : ''}${pnlNetoWeth.toStringAsFixed(8)}',
+                            color: pnlNetoWeth >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                          ),
+                        ],
+
+                        const Divider(color: Color(0xFF334155), height: 32),
+                        const Text(
+                          'Total Realized PNL',
+                          style: TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 8),
+                        _buildSummaryRow(
+                          'USD',
+                          '\$${investor.totalRealizedPnlUsd.toStringAsFixed(2)}',
+                          color: investor.totalRealizedPnlUsd >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                        ),
+                        _buildSummaryRow(
+                          'WBTC',
+                          investor.totalRealizedPnlWbtc.toStringAsFixed(8),
+                          color: investor.totalRealizedPnlWbtc >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                        ),
+                        _buildSummaryRow(
+                          'WETH',
+                          investor.totalRealizedPnlWeth.toStringAsFixed(8),
+                          color: investor.totalRealizedPnlWeth >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
+                        ),
+                      ],
+                    ),
                   ),
-                  _buildSummaryRow('Avg Nav USD', '\$${investor.avgPurchaseNavUsd.toStringAsFixed(2)}'),
-                  const Divider(color: Color(0xFF334155), height: 32),
-                  const Text('Realized PNL', style: TextStyle(color: Colors.white54, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  _buildSummaryRow(
-                    'USD',
-                    '\$${investor.totalRealizedPnlUsd.toStringAsFixed(2)}',
-                    color: investor.totalRealizedPnlUsd >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
-                  ),
-                  _buildSummaryRow('WBTC', investor.totalRealizedPnlWbtc.toStringAsFixed(8)),
-                  _buildSummaryRow('WETH', investor.totalRealizedPnlWeth.toStringAsFixed(8)),
-                ],
-              ),
+                );
+              },
             ),
           ),
           // Right Panel: Operations List
