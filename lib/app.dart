@@ -12,12 +12,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF0F172A), // Slate 900
+        scaffoldBackgroundColor: const Color(0xFF09090B), // Fondo casi negro muy elegante (Zinc 950)
         colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF10B981), // Emerald 500 - Neon Green
+          primary: Color(0xFFD4AF37), // Oro Premium (Metallic Gold)
           secondary: Color(0xFFF43F5E), // Rose 500 - Soft Red
-          surface: Color(0xFF1E293B), // Slate 800
-          background: Color(0xFF0F172A), // Slate 900
+          surface: Color(0xFF18181B), // Zinc 900
+          background: Color(0xFF09090B), // Zinc 950
         ),
         fontFamily: 'Roboto', // Or inter/outfit if imported in pubspec
         textTheme: const TextTheme(
