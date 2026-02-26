@@ -54,8 +54,8 @@ class InvestorDetailScreen extends StatelessWidget {
                     '\$${investor.totalRealizedPnlUsd.toStringAsFixed(2)}',
                     color: investor.totalRealizedPnlUsd >= 0 ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
                   ),
-                  _buildSummaryRow('WBTC', investor.totalRealizedPnlWbtc.toStringAsFixed(5)),
-                  _buildSummaryRow('WETH', investor.totalRealizedPnlWeth.toStringAsFixed(5)),
+                  _buildSummaryRow('WBTC', investor.totalRealizedPnlWbtc.toStringAsFixed(8)),
+                  _buildSummaryRow('WETH', investor.totalRealizedPnlWeth.toStringAsFixed(8)),
                 ],
               ),
             ),
@@ -124,11 +124,11 @@ class InvestorDetailScreen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'NAV: \$${op.navUsdApplied.toStringAsFixed(2)}',
+                                    'NAV: \$${op.navUsdApplied.toStringAsFixed(4)}',
                                     style: const TextStyle(color: Colors.white70, fontSize: 13),
                                   ),
                                   Text(
-                                    '${op.sharesOperated.toStringAsFixed(2)} Shares',
+                                    '${op.sharesOperated.toStringAsFixed(4)} Shares',
                                     style: const TextStyle(
                                       color: Color(0xFF10B981),
                                       fontSize: 13,
