@@ -29,7 +29,7 @@ class FundRepository {
 
   // Stream for Investors List
   Stream<List<Investor>> streamInvestors() {
-    return _firestore.collection('investors').snapshots().map((snapshot) {
+    return _firestore.collection('investors').orderBy('current_shares', descending: true).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => Investor.fromMap(doc.id, doc.data())).toList();
     });
   }
