@@ -5,6 +5,7 @@ import '../../../../core/models/investor.dart';
 import '../../../../core/models/fund_state.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/theme/app_colors.dart';
 import 'investor_detail_screen.dart';
 
 class InvestorsView extends StatelessWidget {
@@ -55,16 +56,7 @@ class InvestorsView extends StatelessWidget {
                     final fundState = stateSnapshot.data;
                     final currentNavUsd = fundState?.navUsd ?? 0.0;
 
-                    final colors = [
-                      const Color(0xFF10B981), // Emerald
-                      const Color(0xFF3B82F6), // Blue
-                      const Color(0xFFF59E0B), // Amber
-                      const Color(0xFF8B5CF6), // Violet
-                      const Color(0xFFEC4899), // Pink
-                      const Color(0xFF14B8A6), // Teal
-                      const Color(0xFFF43F5E), // Rose
-                      const Color(0xFF84CC16), // Lime
-                    ];
+                    final colors = AppColors.chartColors;
 
                     return Column(
                       children: [
@@ -78,12 +70,12 @@ class InvestorsView extends StatelessWidget {
                                   margin: const EdgeInsets.only(bottom: 24),
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
-                                      colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
+                                      colors: [AppColors.surfaceDark, AppColors.backgroundDark],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     ),
                                     borderRadius: BorderRadius.circular(24),
-                                    border: Border.all(color: const Color(0xFF334155), width: 1),
+                                    border: Border.all(color: AppColors.borderDark, width: 1),
                                     boxShadow: const [
                                       BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4)),
                                     ],
@@ -174,15 +166,11 @@ class InvestorsView extends StatelessWidget {
                                 child: Container(
                                   padding: const EdgeInsets.all(20),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF1E293B),
+                                    color: AppColors.surfaceDark,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: colorTheme.withValues(alpha: 0.3), width: 1.5),
+                                    border: Border.all(color: colorTheme.withOpacity(0.3), width: 1.5),
                                     boxShadow: [
-                                      BoxShadow(
-                                        color: colorTheme.withValues(alpha: 0.05),
-                                        blurRadius: 10,
-                                        spreadRadius: 2,
-                                      ),
+                                      BoxShadow(color: colorTheme.withOpacity(0.05), blurRadius: 10, spreadRadius: 2),
                                     ],
                                   ),
                                   child: Column(
@@ -192,7 +180,7 @@ class InvestorsView extends StatelessWidget {
                                         children: [
                                           CircleAvatar(
                                             radius: 24,
-                                            backgroundColor: colorTheme.withValues(alpha: 0.2),
+                                            backgroundColor: colorTheme.withOpacity(0.2),
                                             child: Text(
                                               investor.name.isNotEmpty ? investor.name[0].toUpperCase() : '?',
                                               style: TextStyle(
@@ -268,12 +256,12 @@ class InvestorsView extends StatelessWidget {
                                       Container(
                                         padding: const EdgeInsets.all(16),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFF0F172A).withValues(alpha: 0.6),
+                                          color: AppColors.backgroundDark.withOpacity(0.6),
                                           borderRadius: BorderRadius.circular(16),
                                           border: Border.all(
                                             color: pnlNetoUsd >= 0
-                                                ? const Color(0xFF10B981).withValues(alpha: 0.2)
-                                                : const Color(0xFFF43F5E).withValues(alpha: 0.2),
+                                                ? AppColors.success.withOpacity(0.2)
+                                                : AppColors.error.withOpacity(0.2),
                                           ),
                                         ),
                                         child: Column(
@@ -304,8 +292,8 @@ class InvestorsView extends StatelessWidget {
                                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                                   decoration: BoxDecoration(
                                                     color: pnlNetoUsd >= 0
-                                                        ? const Color(0xFF10B981).withValues(alpha: 0.1)
-                                                        : const Color(0xFFF43F5E).withValues(alpha: 0.1),
+                                                        ? AppColors.success.withOpacity(0.1)
+                                                        : AppColors.error.withOpacity(0.1),
                                                     borderRadius: BorderRadius.circular(12),
                                                   ),
                                                   child: Row(
@@ -313,17 +301,13 @@ class InvestorsView extends StatelessWidget {
                                                       Icon(
                                                         pnlNetoUsd >= 0 ? Icons.arrow_upward : Icons.arrow_downward,
                                                         size: 14,
-                                                        color: pnlNetoUsd >= 0
-                                                            ? const Color(0xFF10B981)
-                                                            : const Color(0xFFF43F5E),
+                                                        color: pnlNetoUsd >= 0 ? AppColors.success : AppColors.error,
                                                       ),
                                                       const SizedBox(width: 4),
                                                       Text(
                                                         '${(investor.roiUsd * 100).toStringAsFixed(2)}%',
                                                         style: TextStyle(
-                                                          color: pnlNetoUsd >= 0
-                                                              ? const Color(0xFF10B981)
-                                                              : const Color(0xFFF43F5E),
+                                                          color: pnlNetoUsd >= 0 ? AppColors.success : AppColors.error,
                                                           fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
@@ -347,9 +331,7 @@ class InvestorsView extends StatelessWidget {
                                                 Text(
                                                   '${pnlNetoUsd >= 0 ? '+' : ''}${currencyFormat.format(pnlNetoUsd)}',
                                                   style: TextStyle(
-                                                    color: pnlNetoUsd >= 0
-                                                        ? const Color(0xFF10B981)
-                                                        : const Color(0xFFF43F5E),
+                                                    color: pnlNetoUsd >= 0 ? AppColors.success : AppColors.error,
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -383,7 +365,7 @@ class InvestorsView extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.only(right: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A).withValues(alpha: 0.5),
+        color: AppColors.backgroundDark.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
