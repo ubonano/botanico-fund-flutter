@@ -6,6 +6,7 @@ import '../../../../core/models/investor.dart';
 import '../../../../core/models/operation.dart';
 import '../../../../core/models/fund_state.dart';
 import '../../../../core/theme/app_colors.dart';
+import 'capital_movement_dialog.dart';
 
 class InvestorDetailDialog extends StatelessWidget {
   final Investor investor;
@@ -244,7 +245,38 @@ class InvestorDetailDialog extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 8),
+          InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () {
+              CapitalMovementDialog.show(
+                context,
+                investorId: investor.id,
+                investorName: investor.name.isNotEmpty ? investor.name : investor.id,
+                colorTheme: colorTheme,
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.success.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.success.withValues(alpha: 0.2)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.swap_vert_rounded, size: 16, color: AppColors.success.withValues(alpha: 0.8)),
+                  const SizedBox(width: 6),
+                  const Text(
+                    'Nuevo Movimiento',
+                    style: TextStyle(color: AppColors.success, fontSize: 11, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
           InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () => Navigator.pop(context),
