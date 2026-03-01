@@ -154,10 +154,10 @@ class OverviewView extends StatelessWidget {
                           _buildAssetCard(
                             title: 'Tether',
                             subtitle: 'USDT',
-                            inventory: '0.0000',
-                            inventoryValueUsd: 0,
+                            inventory: cryptoFormat.format(fundState.balanceUsdtWallet),
+                            inventoryValueUsd: fundState.balanceUsdtWallet,
                             price: null,
-                            wallet: null,
+                            wallet: cryptoFormat.format(fundState.balanceUsdtWallet),
                             pool: null,
                             icon: Icons.payments,
                             color: const Color(0xFF26A17B),
@@ -166,10 +166,10 @@ class OverviewView extends StatelessWidget {
                           _buildAssetCard(
                             title: 'Polygon',
                             subtitle: 'POL',
-                            inventory: '0.0000',
-                            inventoryValueUsd: 0,
-                            price: '\$0.00',
-                            wallet: null,
+                            inventory: cryptoFormat.format(fundState.balancePolWallet),
+                            inventoryValueUsd: fundState.balancePolWallet * fundState.pricePol,
+                            price: currencyFormat.format(fundState.pricePol),
+                            wallet: cryptoFormat.format(fundState.balancePolWallet),
                             pool: null,
                             icon: Icons.hexagon,
                             color: const Color(0xFF8247E5),
@@ -559,86 +559,88 @@ class OverviewView extends StatelessWidget {
           ),
 
           // MIDDLE: Desglose Wallet / Pool
-          if (wallet != null && pool != null)
+          if (wallet != null || pool != null)
             Row(
               children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.04),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.account_balance_wallet_outlined, color: Colors.white38, size: 14),
-                        const SizedBox(width: 6),
-                        const Text(
-                          'WALLET',
-                          style: TextStyle(
-                            color: Colors.white38,
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.0,
+                if (wallet != null)
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.04),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.account_balance_wallet_outlined, color: Colors.white38, size: 14),
+                          const SizedBox(width: 6),
+                          const Text(
+                            'WALLET',
+                            style: TextStyle(
+                              color: Colors.white38,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.0,
+                            ),
                           ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          wallet,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: 'monospace',
+                          const Spacer(),
+                          Text(
+                            wallet,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'monospace',
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: color.withValues(alpha: 0.15)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.water_drop_outlined, color: color.withValues(alpha: 0.6), size: 14),
-                        const SizedBox(width: 6),
-                        Text(
-                          'POOL',
-                          style: TextStyle(
-                            color: color.withValues(alpha: 0.6),
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.0,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          pool,
-                          style: TextStyle(
-                            color: color,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: 'monospace',
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                if (wallet != null && pool != null) const SizedBox(width: 10),
+                if (pool != null)
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: color.withValues(alpha: 0.15)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.water_drop_outlined, color: color.withValues(alpha: 0.6), size: 14),
+                          const SizedBox(width: 6),
+                          Text(
+                            'POOL',
+                            style: TextStyle(
+                              color: color.withValues(alpha: 0.6),
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            pool,
+                            style: TextStyle(
+                              color: color,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'monospace',
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
               ],
             )
           else

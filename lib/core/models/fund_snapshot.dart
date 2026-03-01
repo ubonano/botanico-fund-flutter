@@ -6,7 +6,9 @@ class FundSnapshot extends FundState {
   final DateTime? timestamp;
   final double priceWeth;
   final double priceWbtc;
-  final double balanceMaticWallet;
+  final double pricePol;
+  final double balancePolWallet;
+  final double balanceUsdtWallet;
   final double balanceWethWallet;
   final double balanceWethPool;
   final double balanceWethTotal;
@@ -29,7 +31,9 @@ class FundSnapshot extends FundState {
     this.timestamp,
     required this.priceWeth,
     required this.priceWbtc,
-    required this.balanceMaticWallet,
+    required this.pricePol,
+    required this.balancePolWallet,
+    required this.balanceUsdtWallet,
     required this.balanceWethWallet,
     required this.balanceWethPool,
     required this.balanceWethTotal,
@@ -53,12 +57,12 @@ class FundSnapshot extends FundState {
       lastUpdateTimestamp: data['last_update_timestamp'] != null
           ? (data['last_update_timestamp'] as Timestamp).toDate()
           : null,
-      timestamp: data['timestamp'] != null
-          ? (data['timestamp'] as Timestamp).toDate()
-          : null,
+      timestamp: data['timestamp'] != null ? (data['timestamp'] as Timestamp).toDate() : null,
       priceWeth: (data['price_weth'] ?? 0.0).toDouble(),
       priceWbtc: (data['price_wbtc'] ?? 0.0).toDouble(),
-      balanceMaticWallet: (data['balance_matic_wallet'] ?? 0.0).toDouble(),
+      pricePol: (data['price_pol'] ?? 0.0).toDouble(),
+      balancePolWallet: (data['balance_pol_wallet'] ?? 0.0).toDouble(),
+      balanceUsdtWallet: (data['balance_usdt_wallet'] ?? 0.0).toDouble(),
       balanceWethWallet: (data['balance_weth_wallet'] ?? 0.0).toDouble(),
       balanceWethPool: (data['balance_weth_pool'] ?? 0.0).toDouble(),
       balanceWethTotal: (data['balance_weth_total'] ?? 0.0).toDouble(),
