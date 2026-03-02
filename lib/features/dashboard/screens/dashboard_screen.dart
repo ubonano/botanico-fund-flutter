@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:botanico_fund_flutter/core/config/locator.dart';
 import 'package:botanico_fund_flutter/core/services/auth_service.dart';
 import 'overview_view.dart';
-import 'investors_view.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -14,7 +13,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _views = const [OverviewView(), InvestorsView()];
+  final List<Widget> _views = const [OverviewView()];
 
   Future<void> _handleLogout(BuildContext context) async {
     final confirmed = await showDialog<bool>(
@@ -141,8 +140,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         const SizedBox(height: 16),
         _buildNavItem(index: 0, icon: Icons.dashboard_outlined, selectedIcon: Icons.dashboard, label: 'Resumen'),
-        const SizedBox(height: 8),
-        _buildNavItem(index: 1, icon: Icons.group_outlined, selectedIcon: Icons.group, label: 'Inversores'),
         const Spacer(),
 
         // Cerrar Sesión
