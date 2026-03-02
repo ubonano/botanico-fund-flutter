@@ -1,6 +1,8 @@
 class Investor {
   final String id;
   final String name;
+  final String lastName;
+  final String email;
   final double currentShares;
   final double netInvestmentUsd;
   final double netInvestmentWbtc;
@@ -18,6 +20,8 @@ class Investor {
   Investor({
     required this.id,
     required this.name,
+    required this.lastName,
+    required this.email,
     required this.currentShares,
     required this.netInvestmentUsd,
     required this.netInvestmentWbtc,
@@ -37,6 +41,8 @@ class Investor {
     return Investor(
       id: id,
       name: data['name'] ?? '',
+      lastName: data['last_name'] ?? '',
+      email: data['email'] ?? '',
       currentShares: (data['current_shares'] ?? 0.0).toDouble(),
       netInvestmentUsd: (data['net_investment_usd'] ?? 0.0).toDouble(),
       netInvestmentWbtc: (data['net_investment_wbtc'] ?? 0.0).toDouble(),

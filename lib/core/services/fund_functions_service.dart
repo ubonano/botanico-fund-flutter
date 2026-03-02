@@ -22,4 +22,12 @@ class FundFunctionsService {
 
     return result.data.toString();
   }
+
+  Future<String> createInvestor({required String name, required String lastName}) async {
+    final callable = _functions.httpsCallable('createInvestor');
+
+    final result = await callable.call({'name': name, 'lastName': lastName});
+
+    return result.data.toString();
+  }
 }
