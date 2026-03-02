@@ -14,4 +14,12 @@ class FundFunctionsService {
 
     return result.data.toString();
   }
+
+  Future<String> updateWallet({required String walletAddress}) async {
+    final callable = _functions.httpsCallable('updateWallet');
+
+    final result = await callable.call({'walletAddress': walletAddress});
+
+    return result.data.toString();
+  }
 }
