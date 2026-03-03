@@ -71,7 +71,7 @@ class InvestorsScreen extends StatelessWidget {
                   );
                 }
 
-                final investors = snapshot.data ?? [];
+                final investors = (snapshot.data ?? []).where((i) => i.currentShares > 0).toList();
 
                 if (investors.isEmpty) {
                   return _buildEmptyState(context);
