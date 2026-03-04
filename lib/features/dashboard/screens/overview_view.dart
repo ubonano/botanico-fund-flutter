@@ -220,7 +220,7 @@ class OverviewView extends StatelessWidget {
                             );
                           }
 
-                          final investors = investorsSnapshot.data?.where((i) => i.currentShares > 0).toList();
+                          final investors = investorsSnapshot.data;
 
                           if (investors == null || investors.isEmpty) {
                             return const Center(
