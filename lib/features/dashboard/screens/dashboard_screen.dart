@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:botanico_fund_flutter/core/config/locator.dart';
 import 'package:botanico_fund_flutter/core/services/auth_service.dart';
+import 'package:botanico_fund_flutter/core/theme/app_colors.dart';
 import 'overview_view.dart';
 import 'investors_screen.dart';
 import 'settings_screen.dart';
@@ -38,7 +39,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Cerrar sesión', style: TextStyle(color: Color(0xFFD4AF37))),
+            child: const Text('Cerrar sesión', style: TextStyle(color: AppColors.primary)),
           ),
         ],
       ),
@@ -61,7 +62,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           : AppBar(
               backgroundColor: const Color(0xFF18181B), // Zinc 900
               elevation: 0,
-              iconTheme: const IconThemeData(color: Color(0xFFD4AF37)), // Gold
+              iconTheme: const IconThemeData(color: AppColors.primary), // Gold
               title: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(color: const Color(0xFFEEEEEE), borderRadius: BorderRadius.circular(50)),
@@ -166,7 +167,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required String label,
   }) {
     final isSelected = _selectedIndex == index;
-    final color = isSelected ? const Color(0xFFD4AF37) : Colors.white60; // Gold or default
+    final color = isSelected ? AppColors.primary : Colors.white60;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -185,15 +186,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
           decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xFFD4AF37).withOpacity(0.1)
-                : Colors.transparent, // Corrected from .withValues(alpha: 0.1)
+            color: isSelected ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected
-                  ? const Color(0xFFD4AF37).withOpacity(0.3)
-                  : Colors.transparent, // Corrected from .withValues(alpha: 0.3)
-            ),
+            border: Border.all(color: isSelected ? AppColors.primary.withOpacity(0.3) : Colors.transparent),
           ),
           child: Row(
             children: [
@@ -214,9 +209,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   width: 4,
                   height: 24,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD4AF37),
+                    gradient: AppColors.primaryGradient,
                     borderRadius: BorderRadius.circular(4),
-                    boxShadow: const [BoxShadow(color: Color(0xFFD4AF37), blurRadius: 4, spreadRadius: 1)],
+                    boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.5), blurRadius: 4, spreadRadius: 1)],
                   ),
                 ),
             ],

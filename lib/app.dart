@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF09090B), // Fondo casi negro muy elegante (Zinc 950)
         colorScheme: const ColorScheme.dark(
-          primary: Color(0xFFD4AF37), // Oro Premium (Metallic Gold)
+          primary: Color(0xFF7B68EE), // Botanico Logo Violet
           secondary: Color(0xFFF43F5E), // Rose 500 - Soft Red
           surface: Color(0xFF18181B), // Zinc 900
           background: Color(0xFF09090B), // Zinc 950

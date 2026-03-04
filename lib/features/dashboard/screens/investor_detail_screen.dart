@@ -465,7 +465,7 @@ class InvestorDetailDialog extends StatelessWidget {
       stream: fundRepo.streamInvestorOperations(investor.id),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.primaryGold));
+          return const Center(child: CircularProgressIndicator(color: AppColors.primary));
         }
 
         if (snapshot.hasError) {

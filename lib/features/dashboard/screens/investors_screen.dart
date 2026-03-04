@@ -23,11 +23,11 @@ class InvestorsScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryGold.withValues(alpha: 0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.2)),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
                 ),
-                child: const Icon(Icons.people_rounded, color: AppColors.primaryGold, size: 24),
+                child: const Icon(Icons.people_rounded, color: AppColors.primary, size: 24),
               ),
               const SizedBox(width: 16),
               const Expanded(
@@ -59,7 +59,7 @@ class InvestorsScreen extends StatelessWidget {
               stream: repository.streamInvestors(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(color: AppColors.primaryGold, strokeWidth: 2));
+                  return const Center(child: CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2));
                 }
 
                 if (snapshot.hasError) {
@@ -97,18 +97,18 @@ class InvestorsScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: AppColors.primaryGold.withValues(alpha: 0.12),
+          color: AppColors.primary.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.25)),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.25)),
         ),
         child: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.person_add_alt_1_rounded, color: AppColors.primaryGold, size: 18),
+            Icon(Icons.person_add_alt_1_rounded, color: AppColors.primary, size: 18),
             SizedBox(width: 8),
             Text(
               'Nuevo Inversor',
-              style: TextStyle(color: AppColors.primaryGold, fontSize: 13, fontWeight: FontWeight.bold),
+              style: TextStyle(color: AppColors.primary, fontSize: 13, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -155,14 +155,14 @@ class InvestorsScreen extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.primaryGold.withValues(alpha: 0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.2)),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
             ),
             child: Center(
               child: Text(
                 initials,
-                style: const TextStyle(color: AppColors.primaryGold, fontSize: 14, fontWeight: FontWeight.bold),
+                style: const TextStyle(color: AppColors.primary, fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),
           ),

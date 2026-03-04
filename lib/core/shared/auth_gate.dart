@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:botanico_fund_flutter/core/config/locator.dart';
 import 'package:botanico_fund_flutter/core/services/auth_service.dart';
+import 'package:botanico_fund_flutter/core/theme/app_colors.dart';
 import 'package:botanico_fund_flutter/features/dashboard/screens/dashboard_screen.dart';
 import 'package:botanico_fund_flutter/features/login/screens/login_screen.dart';
 
@@ -24,7 +25,7 @@ class AuthGate extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             backgroundColor: Color(0xFF09090B),
-            body: Center(child: CircularProgressIndicator(color: Color(0xFFD4AF37))),
+            body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
           );
         }
 

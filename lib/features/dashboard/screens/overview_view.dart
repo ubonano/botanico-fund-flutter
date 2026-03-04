@@ -54,7 +54,7 @@ class OverviewView extends StatelessWidget {
                     'Cuotapartes Totales',
                     numberFormat.format(state.totalShares),
                     Icons.pie_chart_sharp,
-                    AppColors.primaryGold,
+                    AppColors.primary,
                   );
                 },
               ),
@@ -66,7 +66,7 @@ class OverviewView extends StatelessWidget {
               stream: fundRepo.streamLatestSnapshot(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(color: AppColors.primaryGold));
+                  return const Center(child: CircularProgressIndicator(color: AppColors.primary));
                 }
 
                 if (snapshot.hasError) {
@@ -99,7 +99,7 @@ class OverviewView extends StatelessWidget {
                         wbtcExposure: cryptoFormat.format(fundState.totalValueWbtc),
                         wethExposure: cryptoFormat.format(fundState.totalValueWeth),
                         icon: Icons.account_balance_wallet,
-                        color: AppColors.primaryGold,
+                        color: AppColors.primary,
                       ),
                       const SizedBox(height: 24),
 
@@ -206,7 +206,7 @@ class OverviewView extends StatelessWidget {
                             return const Center(
                               child: Padding(
                                 padding: EdgeInsets.all(24.0),
-                                child: CircularProgressIndicator(color: AppColors.primaryGold),
+                                child: CircularProgressIndicator(color: AppColors.primary),
                               ),
                             );
                           }

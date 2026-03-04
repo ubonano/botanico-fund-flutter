@@ -140,7 +140,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: AppColors.primaryGold, width: 1.5),
+                              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
                             ),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                             prefixIcon: const Icon(Icons.tag, color: Colors.white24, size: 18),
@@ -176,9 +176,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   : const Icon(Icons.save_rounded, size: 18),
                               label: Text(_isSaving ? 'Guardando...' : 'Guardar'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primaryGold,
+                                backgroundColor: AppColors.primary,
                                 foregroundColor: AppColors.backgroundDark,
-                                disabledBackgroundColor: AppColors.primaryGold.withOpacity(0.3),
+                                disabledBackgroundColor: AppColors.primary.withOpacity(0.3),
                                 disabledForegroundColor: AppColors.backgroundDark.withOpacity(0.5),
                                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -224,11 +224,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryGold.withOpacity(0.1),
+                    color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.primaryGold.withOpacity(0.2)),
+                    border: Border.all(color: AppColors.primary.withOpacity(0.2)),
                   ),
-                  child: Icon(icon, color: AppColors.primaryGold, size: 20),
+                  child: Icon(icon, color: AppColors.primary, size: 20),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -258,7 +258,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ? const Center(
                     child: Padding(
                       padding: EdgeInsets.all(20),
-                      child: CircularProgressIndicator(color: AppColors.primaryGold, strokeWidth: 2),
+                      child: CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2),
                     ),
                   )
                 : child,

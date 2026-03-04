@@ -202,26 +202,36 @@ class _LoginScreenState extends State<LoginScreen> {
             // Login button
             SizedBox(
               height: 52,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleLogin,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryGold,
-                  foregroundColor: Colors.black,
-                  disabledBackgroundColor: AppColors.primaryGold.withOpacity(0.5),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  elevation: 0,
-                ),
-                child: _isLoading
-                    ? const SizedBox(
+              child: _isLoading
+                  ? Center(
+                      child: SizedBox(
                         height: 22,
                         width: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.black54),
-                      )
-                    : const Text(
-                        'Ingresar',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                        child: CircularProgressIndicator(strokeWidth: 2.5, color: AppColors.primary),
                       ),
-              ),
+                    )
+                  : Container(
+                      decoration: BoxDecoration(
+                        gradient: AppColors.primaryGradient,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: _handleLogin,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          elevation: 0,
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Ingresar',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                          ),
+                        ),
+                      ),
+                    ),
             ),
           ],
         ),
@@ -244,7 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
       obscureText: obscureText,
       validator: validator,
       style: const TextStyle(color: Colors.white, fontSize: 15),
-      cursorColor: AppColors.primaryGold,
+      cursorColor: AppColors.primary,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 14),
@@ -262,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.primaryGold, width: 1.5),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),

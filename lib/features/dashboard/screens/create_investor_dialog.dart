@@ -85,7 +85,7 @@ class _CreateInvestorDialogState extends State<CreateInvestorDialog> {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.2), width: 1.0),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1.0),
           boxShadow: [
             BoxShadow(color: Colors.black.withValues(alpha: 0.6), blurRadius: 40, offset: const Offset(0, 12)),
           ],
@@ -127,10 +127,10 @@ class _CreateInvestorDialogState extends State<CreateInvestorDialog> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primaryGold.withValues(alpha: 0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.person_add_alt_1_rounded, color: AppColors.primaryGold, size: 20),
+            child: const Icon(Icons.person_add_alt_1_rounded, color: AppColors.primary, size: 20),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -166,7 +166,7 @@ class _CreateInvestorDialogState extends State<CreateInvestorDialog> {
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppColors.primaryGold.withValues(alpha: 0.5), size: 20),
+          Icon(icon, color: AppColors.primary.withValues(alpha: 0.5), size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: TextField(
@@ -209,13 +209,13 @@ class _CreateInvestorDialogState extends State<CreateInvestorDialog> {
       child: ElevatedButton(
         onPressed: _isLoading || _successMessage != null ? null : _submit,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryGold.withValues(alpha: 0.15),
-          foregroundColor: AppColors.primaryGold,
+          backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+          foregroundColor: AppColors.primary,
           disabledBackgroundColor: Colors.white.withValues(alpha: 0.03),
           disabledForegroundColor: Colors.white24,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
-            side: BorderSide(color: AppColors.primaryGold.withValues(alpha: 0.3)),
+            side: BorderSide(color: AppColors.primary.withValues(alpha: 0.3)),
           ),
           elevation: 0,
         ),
@@ -223,7 +223,7 @@ class _CreateInvestorDialogState extends State<CreateInvestorDialog> {
             ? const SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(color: AppColors.primaryGold, strokeWidth: 2),
+                child: CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2),
               )
             : const Text('Registrar Inversor', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
       ),
