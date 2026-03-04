@@ -138,6 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
               label: 'Email',
               icon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Ingresa tu email';
@@ -153,6 +154,8 @@ class _LoginScreenState extends State<LoginScreen> {
               label: 'Contraseña',
               icon: Icons.lock_outline,
               obscureText: _obscurePassword,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) => _handleLogin(),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
@@ -244,15 +247,19 @@ class _LoginScreenState extends State<LoginScreen> {
     required String label,
     required IconData icon,
     TextInputType? keyboardType,
+    TextInputAction? textInputAction,
     bool obscureText = false,
     Widget? suffixIcon,
     String? Function(String?)? validator,
+    void Function(String)? onFieldSubmitted,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
+      textInputAction: textInputAction,
       obscureText: obscureText,
       validator: validator,
+      onFieldSubmitted: onFieldSubmitted,
       style: const TextStyle(color: Colors.white, fontSize: 15),
       cursorColor: AppColors.primary,
       decoration: InputDecoration(
