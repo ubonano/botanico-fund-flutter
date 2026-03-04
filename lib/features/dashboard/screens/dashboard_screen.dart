@@ -62,9 +62,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               backgroundColor: const Color(0xFF18181B), // Zinc 900
               elevation: 0,
               iconTheme: const IconThemeData(color: Color(0xFFD4AF37)), // Gold
-              title: const Text(
-                'Botánico Fund',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              title: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(color: const Color(0xFFEEEEEE), borderRadius: BorderRadius.circular(50)),
+                child: Image.asset('assets/images/botanico_logo_text.png', height: 28, fit: BoxFit.contain),
               ),
             ),
       drawer: isDesktop ? null : Drawer(backgroundColor: const Color(0xFF18181B), child: _buildSidebarContent()),
@@ -101,31 +102,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         // Logo Area
         Padding(
           padding: const EdgeInsets.only(top: 48.0, left: 24.0, right: 24.0, bottom: 40.0),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFD4AF37).withOpacity(0.1), // Corrected from .withValues(alpha: 0.1)
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: const Color(0xFFD4AF37).withOpacity(0.3),
-                  ), // Corrected from .withValues(alpha: 0.3)
-                ),
-                child: const Icon(Icons.spa, color: Color(0xFFD4AF37), size: 28), // Botánico icon in Gold
-              ),
-              const SizedBox(width: 16),
-              const Text(
-                'Botánico\nFund',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.2,
-                  height: 1.2,
-                ),
-              ),
-            ],
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            decoration: BoxDecoration(color: const Color(0xFFEEEEEE), borderRadius: BorderRadius.circular(50)),
+            child: Image.asset('assets/images/botanico_logo_text.png', height: 100, fit: BoxFit.contain),
           ),
         ),
 

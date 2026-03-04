@@ -77,44 +77,32 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.all(24.0),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 420),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [_buildLogo(), const SizedBox(height: 48), _buildLoginCard()],
-            ),
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [_buildCombinedCard()]),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildLogo() {
+  Widget _buildCombinedCard() {
     return Column(
       children: [
+        // Logo area con fondo gris claro
         Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.primaryGold.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.primaryGold.withOpacity(0.3)),
-            boxShadow: [BoxShadow(color: AppColors.primaryGold.withOpacity(0.1), blurRadius: 24, spreadRadius: 2)],
+          width: double.infinity,
+          height: 200,
+          decoration: const BoxDecoration(
+            color: Color(0xFFF0F0F0),
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
-          child: const Icon(Icons.spa, color: AppColors.primaryGold, size: 48),
-        ),
-        const SizedBox(height: 24),
-        const Text(
-          'Botánico Fund',
-          style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w800, letterSpacing: 1.5),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Panel de Administración',
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.4),
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.5,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Image.asset('assets/images/botanico_logo_full.png', fit: BoxFit.contain),
+            ),
           ),
-        ),
+        ), // Login card que "pisa" el contenedor del logo
+        Transform.translate(offset: const Offset(0, -16), child: _buildLoginCard()),
       ],
     );
   }
@@ -126,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
         color: AppColors.surfaceDark,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.borderDark),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 8))],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 24, offset: const Offset(0, -4))],
       ),
       child: Form(
         key: _formKey,

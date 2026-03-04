@@ -1,11 +1,11 @@
 {
-    "name": "botanico_fund_flutter",
-    "short_name": "botanico_fund_flutter",
+    "name": "Botanico Fund",
+    "short_name": "Botanico Fund",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Botanico Fund - Grow Together",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
