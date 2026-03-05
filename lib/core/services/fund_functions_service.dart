@@ -30,4 +30,12 @@ class FundFunctionsService {
 
     return result.data.toString();
   }
+
+  Future<String> processCommissions({required double amountUsd}) async {
+    final callable = _functions.httpsCallable('processCommissions');
+
+    final result = await callable.call({'amountUsd': amountUsd});
+
+    return result.data.toString();
+  }
 }

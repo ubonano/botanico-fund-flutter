@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/config/locator.dart';
 import '../../../../core/services/fund_repository.dart';
+import '../../../../core/services/fund_functions_service.dart';
 import '../../../../core/models/fund_snapshot.dart';
 import '../../../../core/models/investor.dart';
 import '../../../../core/models/fund_state.dart';
@@ -45,18 +47,24 @@ class OverviewView extends StatelessWidget {
                   ),
                 ],
               ),
-              StreamBuilder<FundSnapshot?>(
-                stream: fundRepo.streamLatestSnapshot(),
-                builder: (context, snapshot) {
-                  final state = snapshot.data;
-                  if (state == null) return const SizedBox();
-                  return _buildHeaderBadge(
-                    'Cuotapartes Totales',
-                    numberFormat.format(state.totalShares),
-                    Icons.pie_chart_sharp,
-                    AppColors.primary,
-                  );
-                },
+              Row(
+                children: [
+                  _buildCommissionsButton(context),
+                  const SizedBox(width: 12),
+                  StreamBuilder<FundSnapshot?>(
+                    stream: fundRepo.streamLatestSnapshot(),
+                    builder: (context, snapshot) {
+                      final state = snapshot.data;
+                      if (state == null) return const SizedBox();
+                      return _buildHeaderBadge(
+                        'Cuotapartes Totales',
+                        numberFormat.format(state.totalShares),
+                        Icons.pie_chart_sharp,
+                        AppColors.primary,
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -963,6 +971,206 @@ class OverviewView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCommissionsButton(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => _showCommissionsDialog(context),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            gradient: AppColors.primaryGradient,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(color: AppColors.primary.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4)),
+            ],
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.receipt_long, color: Colors.white, size: 18),
+              SizedBox(width: 8),
+              Text(
+                'Cargar Comisiones',
+                style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showCommissionsDialog(BuildContext context) {
+    final controller = TextEditingController();
+    bool isLoading = false;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            final amount = double.tryParse(controller.text);
+            final isValid = amount != null && amount > 0;
+
+            return AlertDialog(
+              backgroundColor: const Color(0xFF18181B),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: const BorderSide(color: Color(0xFF27272A)),
+              ),
+              title: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.receipt_long, color: AppColors.primary, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Cargar Comisiones',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Ingresá el monto total recolectado en comisiones.',
+                    style: TextStyle(color: Colors.white54, fontSize: 13),
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: controller,
+                    enabled: !isLoading,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))],
+                    style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                    decoration: InputDecoration(
+                      prefixText: '\$ ',
+                      prefixStyle: TextStyle(
+                        color: AppColors.primary.withValues(alpha: 0.8),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      hintText: '0.00',
+                      hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.15)),
+                      filled: true,
+                      fillColor: const Color(0xFF09090B),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFF27272A)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFF27272A)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                      ),
+                    ),
+                    onChanged: (_) => setDialogState(() {}),
+                    onSubmitted: isValid && !isLoading
+                        ? (_) async {
+                            setDialogState(() => isLoading = true);
+                            try {
+                              await locator<FundFunctionsService>().processCommissions(amountUsd: amount);
+                              if (dialogContext.mounted) Navigator.pop(dialogContext);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Comisiones de \$${amount.toStringAsFixed(2)} procesadas correctamente.',
+                                    ),
+                                    backgroundColor: AppColors.success,
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              setDialogState(() => isLoading = false);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Error al procesar comisiones: $e'),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                              }
+                            }
+                          }
+                        : null,
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: isLoading ? null : () => Navigator.pop(dialogContext),
+                  child: Text('Cancelar', style: TextStyle(color: isLoading ? Colors.white12 : Colors.white38)),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  child: ElevatedButton(
+                    onPressed: isValid && !isLoading
+                        ? () async {
+                            setDialogState(() => isLoading = true);
+                            try {
+                              await locator<FundFunctionsService>().processCommissions(amountUsd: amount);
+                              if (dialogContext.mounted) Navigator.pop(dialogContext);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Comisiones de \$${amount.toStringAsFixed(2)} procesadas correctamente.',
+                                    ),
+                                    backgroundColor: AppColors.success,
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              setDialogState(() => isLoading = false);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Error al procesar comisiones: $e'),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                              }
+                            }
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.3),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    ),
+                    child: isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          )
+                        : const Text('Procesar', style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }
