@@ -16,6 +16,7 @@ class Investor {
   final double totalRealizedPnlUsd;
   final double totalRealizedPnlWbtc;
   final double totalRealizedPnlWeth;
+  final double commissionRate;
 
   Investor({
     required this.id,
@@ -35,6 +36,7 @@ class Investor {
     required this.totalRealizedPnlUsd,
     required this.totalRealizedPnlWbtc,
     required this.totalRealizedPnlWeth,
+    required this.commissionRate,
   });
 
   factory Investor.fromMap(String id, Map<String, dynamic> data) {
@@ -56,6 +58,7 @@ class Investor {
       totalRealizedPnlUsd: (data['total_realized_pnl_usd'] ?? 0.0).toDouble(),
       totalRealizedPnlWbtc: (data['total_realized_pnl_wbtc'] ?? 0.0).toDouble(),
       totalRealizedPnlWeth: (data['total_realized_pnl_weth'] ?? 0.0).toDouble(),
+      commissionRate: (data['commission_rate'] ?? 0.0).toDouble(),
     );
   }
 }

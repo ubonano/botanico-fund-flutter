@@ -60,4 +60,14 @@ class FundRepository {
       return null;
     });
   }
+
+  // Update Investor fields (name, last_name, commission_rate)
+  Future<void> updateInvestor(String investorId, Map<String, dynamic> data) async {
+    await _firestore.collection('investors').doc(investorId).update(data);
+  }
+
+  // Update Fund Config field
+  Future<void> updateFundConfig(Map<String, dynamic> data) async {
+    await _firestore.collection('config').doc('fund').update(data);
+  }
 }

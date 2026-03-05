@@ -14,22 +14,29 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final _walletController = TextEditingController();
+  final _fundInvestorIdController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isSaving = false;
   bool _hasChanges = false;
   String _originalWallet = '';
+  String _originalFundInvestorId = '';
 
   @override
   void dispose() {
     _walletController.dispose();
+    _fundInvestorIdController.dispose();
     super.dispose();
   }
 
   void _onConfigLoaded(FundConfig config) {
     if (!_hasChanges) {
       _originalWallet = config.walletAddress;
+      _originalFundInvestorId = config.fundInvestorId;
       if (_walletController.text != config.walletAddress) {
         _walletController.text = config.walletAddress;
+      }
+      if (_fundInvestorIdController.text != config.fundInvestorId) {
+        _fundInvestorIdController.text = config.fundInvestorId;
       }
     }
   }
@@ -40,12 +47,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() => _isSaving = true);
 
     try {
-      await locator<FundFunctionsService>().updateWallet(walletAddress: _walletController.text.trim());
+      final walletChanged = _walletController.text.trim() != _originalWallet;
+      final investorIdChanged = _fundInvestorIdController.text.trim() != _originalFundInvestorId;
+
+      if (walletChanged) {
+        await locator<FundFunctionsService>().updateWallet(walletAddress: _walletController.text.trim());
+      }
+      if (investorIdChanged) {
+        await locator<FundRepository>().updateFundConfig({'fundInvestorId': _fundInvestorIdController.text.trim()});
+      }
 
       if (mounted) {
         setState(() {
           _hasChanges = false;
           _originalWallet = _walletController.text.trim();
+          _originalFundInvestorId = _fundInvestorIdController.text.trim();
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -153,7 +169,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           },
                           onChanged: (value) {
                             setState(() {
-                              _hasChanges = value.trim() != _originalWallet;
+                              _hasChanges =
+                                  value.trim() != _originalWallet ||
+                                  _fundInvestorIdController.text.trim() != _originalFundInvestorId;
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Fund Investor ID Field
+                        const Text(
+                          'Fund Investor ID',
+                          style: TextStyle(
+                            color: Colors.white60,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _fundInvestorIdController,
+                          style: const TextStyle(color: Colors.white, fontSize: 14, fontFamily: 'monospace'),
+                          decoration: InputDecoration(
+                            hintText: 'ID del inversor del fondo',
+                            hintStyle: const TextStyle(color: Colors.white24),
+                            filled: true,
+                            fillColor: AppColors.backgroundDark,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: AppColors.borderDark),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: AppColors.borderDark),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            prefixIcon: const Icon(Icons.person_outline, color: Colors.white24, size: 18),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _hasChanges =
+                                  value.trim() != _originalFundInvestorId ||
+                                  _walletController.text.trim() != _originalWallet;
                             });
                           },
                         ),
