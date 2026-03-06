@@ -38,4 +38,12 @@ class FundFunctionsService {
 
     return result.data.toString();
   }
+
+  Future<String> cleanupSnapshots() async {
+    final callable = _functions.httpsCallable('cleanupSnapshots');
+
+    final result = await callable.call();
+
+    return result.data.toString();
+  }
 }
