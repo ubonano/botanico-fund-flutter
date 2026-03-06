@@ -460,6 +460,19 @@ class InvestorDetailDialog extends StatelessWidget {
     );
   }
 
+  /// Retorna (color, icono, etiqueta) según el tipo de operación.
+  static const _commissionAmber = Color(0xFFF59E0B);
+
+  ({Color color, IconData icon, String label}) _operationStyle(String type) {
+    return switch (type) {
+      'DEPOSIT' => (color: AppColors.success, icon: Icons.arrow_downward, label: 'Depósito'),
+      'WITHDRAWAL' => (color: AppColors.error, icon: Icons.arrow_upward, label: 'Retiro'),
+      'COMMISSION' => (color: _commissionAmber, icon: Icons.percent, label: 'Comisión'),
+      'COMMISSION_INCOME' => (color: AppColors.primaryCyan, icon: Icons.account_balance, label: 'Ingreso Comisión'),
+      _ => (color: Colors.white38, icon: Icons.help_outline, label: type),
+    };
+  }
+
   Widget _buildOperationsList(FundRepository fundRepo, NumberFormat currencyFormat, DateFormat dateFormat) {
     return StreamBuilder<List<Operation>>(
       stream: fundRepo.streamInvestorOperations(investor.id),
@@ -487,15 +500,19 @@ class InvestorDetailDialog extends StatelessWidget {
           separatorBuilder: (_, _) => const SizedBox(height: 10),
           itemBuilder: (context, index) {
             final op = operations[index];
-            final isDeposit = op.type == 'DEPOSIT';
-            final opColor = isDeposit ? AppColors.success : AppColors.error;
+            final style = _operationStyle(op.type);
+            final displayAmount = switch (op.type) {
+              'COMMISSION' => op.commissionUsd,
+              'COMMISSION_INCOME' => op.totalCommissionUsd,
+              _ => op.amountUsd,
+            };
 
             return Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: opColor.withValues(alpha: 0.04),
+                color: style.color.withValues(alpha: 0.04),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: opColor.withValues(alpha: 0.1)),
+                border: Border.all(color: style.color.withValues(alpha: 0.1)),
               ),
               child: Row(
                 children: [
@@ -503,8 +520,8 @@ class InvestorDetailDialog extends StatelessWidget {
                   Container(
                     width: 36,
                     height: 36,
-                    decoration: BoxDecoration(color: opColor.withValues(alpha: 0.12), shape: BoxShape.circle),
-                    child: Icon(isDeposit ? Icons.arrow_downward : Icons.arrow_upward, color: opColor, size: 18),
+                    decoration: BoxDecoration(color: style.color.withValues(alpha: 0.12), shape: BoxShape.circle),
+                    child: Icon(style.icon, color: style.color, size: 18),
                   ),
                   const SizedBox(width: 12),
                   // Info
@@ -516,11 +533,11 @@ class InvestorDetailDialog extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              isDeposit ? 'Depósito' : 'Retiro',
-                              style: TextStyle(color: opColor, fontSize: 13, fontWeight: FontWeight.bold),
+                              style.label,
+                              style: TextStyle(color: style.color, fontSize: 13, fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              currencyFormat.format(op.amountUsd),
+                              currencyFormat.format(displayAmount),
                               style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w900),
                             ),
                           ],

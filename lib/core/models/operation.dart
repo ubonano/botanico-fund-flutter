@@ -1,6 +1,6 @@
 class Operation {
   final String id;
-  final String type; // "DEPOSIT" or "WITHDRAWAL"
+  final String type; // "DEPOSIT", "WITHDRAWAL", "COMMISSION", "COMMISSION_INCOME"
   final DateTime? timestamp;
   final double amountUsd;
   final double amountWbtc;
@@ -16,6 +16,8 @@ class Operation {
   final double realizedPnlUsd;
   final double realizedPnlWbtc;
   final double realizedPnlWeth;
+  final double commissionUsd;
+  final double totalCommissionUsd;
 
   Operation({
     required this.id,
@@ -35,6 +37,8 @@ class Operation {
     required this.realizedPnlUsd,
     required this.realizedPnlWbtc,
     required this.realizedPnlWeth,
+    required this.commissionUsd,
+    required this.totalCommissionUsd,
   });
 
   factory Operation.fromMap(String id, Map<String, dynamic> data) {
@@ -58,6 +62,8 @@ class Operation {
       realizedPnlUsd: (data['realized_pnl_usd'] ?? 0.0).toDouble(),
       realizedPnlWbtc: (data['realized_pnl_wbtc'] ?? 0.0).toDouble(),
       realizedPnlWeth: (data['realized_pnl_weth'] ?? 0.0).toDouble(),
+      commissionUsd: (data['commission_usd'] ?? 0.0).toDouble(),
+      totalCommissionUsd: (data['total_commission_usd'] ?? 0.0).toDouble(),
     );
   }
 }
