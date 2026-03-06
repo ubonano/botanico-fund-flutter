@@ -95,7 +95,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surfaceDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Limpiar Snapshots', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Limpiar Snapshots',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         content: const Text(
           '¿Estás seguro de que deseas ejecutar la limpieza de snapshots? Esta acción eliminará los registros duplicados de la base de datos.',
           style: TextStyle(color: Colors.white60, fontSize: 14),
