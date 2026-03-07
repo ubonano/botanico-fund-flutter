@@ -8,7 +8,7 @@ import '../../../../core/models/fund_snapshot.dart';
 import '../../../../core/models/investor.dart';
 import '../../../../core/models/fund_state.dart';
 import '../../../../core/theme/app_colors.dart';
-import 'investor_detail_screen.dart';
+import '../../../features/investor/screens/investor_home_screen.dart';
 
 class OverviewView extends StatelessWidget {
   const OverviewView({super.key});
@@ -828,7 +828,10 @@ class OverviewView extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: () {
-        InvestorDetailDialog.show(context, investor: investor, colorTheme: colorTheme);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => InvestorHomeScreen(investorId: investor.id, isAdmin: true)),
+        );
       },
       child: Container(
         width: 340,

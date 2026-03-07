@@ -3,9 +3,11 @@ import 'package:intl/intl.dart';
 import '../../../../core/config/locator.dart';
 import '../../../../core/services/fund_repository.dart';
 import '../../../../core/models/investor.dart';
+import '../../../../core/models/investor_snapshot.dart';
 import '../../../../core/models/operation.dart';
 import '../../../../core/models/fund_state.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/shared/token_card.dart';
 import 'capital_movement_dialog.dart';
 
 class InvestorDetailDialog extends StatelessWidget {
@@ -25,7 +27,7 @@ class InvestorDetailDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final fundRepo = locator<FundRepository>();
     final currencyFormat = NumberFormat.currency(locale: 'en_US', symbol: '\$');
-    final cryptoFormat = NumberFormat.currency(locale: 'en_US', symbol: '', decimalDigits: 4);
+    final cryptoFormat = NumberFormat.currency(locale: 'en_US', symbol: '', decimalDigits: 6);
     final dateFormat = DateFormat('dd MMM yyyy, HH:mm');
     final sharesFormat = NumberFormat('#,##0.00', 'en_US');
 
@@ -33,7 +35,7 @@ class InvestorDetailDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.all(40),
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 900, maxHeight: 620),
+        constraints: const BoxConstraints(maxWidth: 900, maxHeight: 700),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [AppColors.surfaceDark, AppColors.backgroundDark],
@@ -50,76 +52,85 @@ class InvestorDetailDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           child: Column(
             children: [
-              // BODY con scroll
               Expanded(
                 child: StreamBuilder<FundState?>(
                   stream: fundRepo.streamCurrentFundState(),
                   builder: (context, stateSnapshot) {
                     final fundState = stateSnapshot.data;
-                    final currentNavUsd = fundState?.navUsd ?? 0.0;
 
-                    final currentValueUsd = investor.currentShares * currentNavUsd;
-                    final pnlNetoUsd = currentValueUsd - investor.netInvestmentUsd;
+                    final currentValueUsd = investor.currentShares * (fundState?.navUsd ?? 0.0);
+                    final currentValueWbtc = investor.currentShares * (fundState?.navWbtc ?? 0.0);
+                    final currentValueWeth = investor.currentShares * (fundState?.navWeth ?? 0.0);
+
+                    final variationUsd = currentValueUsd - investor.netInvestmentUsd;
+                    final variationWbtc = currentValueWbtc - investor.netInvestmentWbtc;
+                    final variationWeth = currentValueWeth - investor.netInvestmentWeth;
 
                     final participation = fundState != null && fundState.totalShares > 0
                         ? (investor.currentShares / fundState.totalShares) * 100
                         : 0.0;
 
-                    final isPositiveUsd = pnlNetoUsd >= 0;
-
                     return Column(
                       children: [
-                        // HEADER con datos del fund state
                         _buildHeader(context, participation, sharesFormat),
-                        // BODY
                         Expanded(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // LEFT PANEL: Resumen
+                              // LEFT PANEL: 3 Token Cards
                               SizedBox(
-                                width: 340,
-                                child: SingleChildScrollView(
-                                  padding: const EdgeInsets.all(24),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      // Valor actual hero
-                                      _buildValueHero(
-                                        currentValueUsd: currentValueUsd,
-                                        pnlNetoUsd: pnlNetoUsd,
-                                        isPositive: isPositiveUsd,
-                                        currencyFormat: currencyFormat,
-                                      ),
-                                      const SizedBox(height: 16),
+                                width: 380,
+                                child: StreamBuilder<List<InvestorSnapshot>>(
+                                  stream: fundRepo.streamInvestorSnapshots(investor.id),
+                                  builder: (context, snapshotSnap) {
+                                    final snapshots = snapshotSnap.data ?? [];
 
-                                      // ROI en las 3 denominaciones
-                                      _buildRoiSection(),
-                                      const SizedBox(height: 16),
-
-                                      // NAV Promedio de compra
-                                      _buildSection(
-                                        icon: Icons.speed_outlined,
-                                        title: 'NAV PROMEDIO DE COMPRA',
-                                        child: Text(
-                                          currencyFormat.format(investor.avgPurchaseNavUsd),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w800,
-                                            fontFamily: 'monospace',
+                                    return SingleChildScrollView(
+                                      padding: const EdgeInsets.all(16),
+                                      child: Column(
+                                        children: [
+                                          TokenCard(
+                                            tokenSymbol: 'WBTC',
+                                            tokenIcon: '₿',
+                                            tokenColor: const Color(0xFFF7931A),
+                                            netInvestment: investor.netInvestmentWbtc,
+                                            currentValue: currentValueWbtc,
+                                            roi: investor.roiWbtc,
+                                            nominalVariation: variationWbtc,
+                                            formatValue: (v) => cryptoFormat.format(v),
+                                            snapshots: snapshots,
+                                            roiExtractor: (s) => s.roiWbtc,
                                           ),
-                                        ),
+                                          const SizedBox(height: 12),
+                                          TokenCard(
+                                            tokenSymbol: 'WETH',
+                                            tokenIcon: 'Ξ',
+                                            tokenColor: const Color(0xFF627EEA),
+                                            netInvestment: investor.netInvestmentWeth,
+                                            currentValue: currentValueWeth,
+                                            roi: investor.roiWeth,
+                                            nominalVariation: variationWeth,
+                                            formatValue: (v) => cryptoFormat.format(v),
+                                            snapshots: snapshots,
+                                            roiExtractor: (s) => s.roiWeth,
+                                          ),
+                                          const SizedBox(height: 12),
+                                          TokenCard(
+                                            tokenSymbol: 'USD',
+                                            tokenIcon: '\$',
+                                            tokenColor: AppColors.primaryViolet,
+                                            netInvestment: investor.netInvestmentUsd,
+                                            currentValue: currentValueUsd,
+                                            roi: investor.roiUsd,
+                                            nominalVariation: variationUsd,
+                                            formatValue: (v) => currencyFormat.format(v),
+                                            snapshots: snapshots,
+                                            roiExtractor: (s) => s.roiUsd,
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(height: 16),
-
-                                      // Inversión Neta
-                                      _buildInvestmentSection(
-                                        currencyFormat: currencyFormat,
-                                        cryptoFormat: cryptoFormat,
-                                      ),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
                               ),
 
@@ -208,7 +219,7 @@ class InvestorDetailDialog extends StatelessWidget {
               ],
             ),
           ),
-          // Cuotapartes + Participación integrados
+          // Cuotapartes + Participación
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
@@ -294,172 +305,6 @@ class InvestorDetailDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildValueHero({
-    required double currentValueUsd,
-    required double pnlNetoUsd,
-    required bool isPositive,
-    required NumberFormat currencyFormat,
-  }) {
-    final pnlColor = isPositive ? AppColors.success : AppColors.error;
-
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: colorTheme.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colorTheme.withValues(alpha: 0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'VALOR ACTUAL',
-            style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1.0),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            currencyFormat.format(currentValueUsd),
-            style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900),
-          ),
-          const SizedBox(height: 10),
-          Container(height: 1, color: Colors.white.withValues(alpha: 0.06)),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(isPositive ? Icons.trending_up : Icons.trending_down, size: 16, color: pnlColor),
-              const SizedBox(width: 6),
-              Text(
-                '${isPositive ? '+' : ''}${currencyFormat.format(pnlNetoUsd)}',
-                style: TextStyle(color: pnlColor, fontSize: 15, fontWeight: FontWeight.w800, fontFamily: 'monospace'),
-              ),
-              const Spacer(),
-              Text(
-                'ROI',
-                style: TextStyle(
-                  color: pnlColor.withValues(alpha: 0.6),
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                ),
-              ),
-              const SizedBox(width: 5),
-              Text(
-                '${isPositive ? '+' : ''}${(investor.roiUsd * 100).toStringAsFixed(2)}%',
-                style: TextStyle(color: pnlColor, fontSize: 15, fontWeight: FontWeight.w900),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRoiSection() {
-    return _buildSection(
-      icon: Icons.show_chart,
-      title: 'RENDIMIENTO POR DENOMINACIÓN',
-      child: Row(
-        children: [
-          Expanded(child: _buildRoiChip('BTC', investor.roiWbtc, const Color(0xFFF7931A))),
-          const SizedBox(width: 8),
-          Expanded(child: _buildRoiChip('ETH', investor.roiWeth, const Color(0xFF627EEA))),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRoiChip(String label, double roi, Color color) {
-    final isPositive = roi >= 0;
-    final pnlColor = isPositive ? AppColors.success : AppColors.error;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.1)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            '${isPositive ? '+' : ''}${(roi * 100).toStringAsFixed(2)}%',
-            style: TextStyle(color: pnlColor, fontSize: 13, fontWeight: FontWeight.w900),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInvestmentSection({required NumberFormat currencyFormat, required NumberFormat cryptoFormat}) {
-    return _buildSection(
-      icon: Icons.account_balance_wallet_outlined,
-      title: 'INVERSIÓN NETA',
-      child: Column(
-        children: [
-          _buildDataRow('USD', currencyFormat.format(investor.netInvestmentUsd), Colors.white70),
-          const SizedBox(height: 6),
-          _buildDataRow('WBTC', cryptoFormat.format(investor.netInvestmentWbtc), const Color(0xFFF7931A)),
-          const SizedBox(height: 6),
-          _buildDataRow('WETH', cryptoFormat.format(investor.netInvestmentWeth), const Color(0xFF627EEA)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSection({required IconData icon, required String title, required Widget child}) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.02),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 13, color: Colors.white38),
-              const SizedBox(width: 6),
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white38,
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          child,
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDataRow(String label, String value, Color valueColor) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(color: Colors.white38, fontSize: 11, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          value,
-          style: TextStyle(color: valueColor, fontSize: 13, fontWeight: FontWeight.w700, fontFamily: 'monospace'),
-        ),
-      ],
-    );
-  }
-
   /// Retorna (color, icono, etiqueta) según el tipo de operación.
   static const _commissionAmber = Color(0xFFF59E0B);
 
@@ -516,7 +361,6 @@ class InvestorDetailDialog extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  // Icono
                   Container(
                     width: 36,
                     height: 36,
@@ -524,7 +368,6 @@ class InvestorDetailDialog extends StatelessWidget {
                     child: Icon(style.icon, color: style.color, size: 18),
                   ),
                   const SizedBox(width: 12),
-                  // Info
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
