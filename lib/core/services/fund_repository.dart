@@ -3,6 +3,7 @@ import '../models/fund_state.dart';
 import '../models/fund_snapshot.dart';
 import '../models/fund_config.dart';
 import '../models/investor.dart';
+import '../models/investor_snapshot.dart';
 import '../models/operation.dart';
 
 class FundRepository {
@@ -33,6 +34,31 @@ class FundRepository {
     return _firestore.collection('investors').orderBy('current_shares', descending: true).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => Investor.fromMap(doc.id, doc.data())).toList();
     });
+  }
+
+  // Stream for a single Investor by ID
+  Stream<Investor?> streamInvestor(String investorId) {
+    return _firestore.collection('investors').doc(investorId).snapshots().map((snapshot) {
+      if (snapshot.exists && snapshot.data() != null) {
+        return Investor.fromMap(snapshot.id, snapshot.data()!);
+      }
+      return null;
+    });
+  }
+
+  // Stream for Investor Snapshots (last 30 days, ascending by timestamp)
+  Stream<List<InvestorSnapshot>> streamInvestorSnapshots(String investorId) {
+    final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));
+    return _firestore
+        .collection('investors')
+        .doc(investorId)
+        .collection('snapshots')
+        .where('timestamp', isGreaterThan: Timestamp.fromDate(thirtyDaysAgo))
+        .orderBy('timestamp', descending: false)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) => InvestorSnapshot.fromMap(doc.id, doc.data())).toList();
+        });
   }
 
   // Stream for Investor Operations

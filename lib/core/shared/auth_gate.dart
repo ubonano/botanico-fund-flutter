@@ -68,7 +68,7 @@ class _RoleRouter extends StatelessWidget {
         }
 
         if (role == 'investor') {
-          return const InvestorHomeScreen();
+          return InvestorHomeScreen(investorId: uid);
         }
 
         // Rol desconocido o documento inexistente: cerrar sesión
