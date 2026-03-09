@@ -243,7 +243,6 @@ class OverviewView extends StatelessWidget {
                             stream: fundRepo.streamCurrentFundState(),
                             builder: (context, stateSnapshot) {
                               final investorFundState = stateSnapshot.data;
-                              final currentNavUsd = investorFundState?.navUsd ?? 0.0;
                               final colors = AppColors.chartColors;
 
                               return Wrap(
@@ -252,8 +251,6 @@ class OverviewView extends StatelessWidget {
                                 children: investors.asMap().entries.map((entry) {
                                   final index = entry.key;
                                   final investor = entry.value;
-                                  final currentValueUsd = investor.currentShares * currentNavUsd;
-                                  final pnlNetoUsd = currentValueUsd - investor.netInvestmentUsd;
                                   final colorTheme = colors[index % colors.length];
                                   final participation = investorFundState != null && investorFundState.totalShares > 0
                                       ? (investor.currentShares / investorFundState.totalShares) * 100
@@ -262,11 +259,8 @@ class OverviewView extends StatelessWidget {
                                   return _buildInvestorCard(
                                     context: context,
                                     investor: investor,
-                                    currentValueUsd: currentValueUsd,
-                                    pnlNetoUsd: pnlNetoUsd,
                                     participation: participation,
                                     colorTheme: colorTheme,
-                                    currencyFormat: currencyFormat,
                                   );
                                 }).toList(),
                               );
@@ -816,14 +810,10 @@ class OverviewView extends StatelessWidget {
   Widget _buildInvestorCard({
     required BuildContext context,
     required Investor investor,
-    required double currentValueUsd,
-    required double pnlNetoUsd,
     required double participation,
     required Color colorTheme,
-    required NumberFormat currencyFormat,
   }) {
-    final isPositive = pnlNetoUsd >= 0;
-    final pnlColor = isPositive ? AppColors.success : AppColors.error;
+    final fullName = '${investor.name} ${investor.lastName}'.trim();
 
     return InkWell(
       borderRadius: BorderRadius.circular(20),
@@ -849,7 +839,7 @@ class OverviewView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // HEADER: Avatar + Nombre + Participación
+            // HEADER: Avatar + Nombre + Apellido + Participación
             Row(
               children: [
                 Container(
@@ -875,7 +865,7 @@ class OverviewView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        investor.name.isNotEmpty ? investor.name : investor.id,
+                        fullName.isNotEmpty ? fullName : investor.id,
                         style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -905,70 +895,55 @@ class OverviewView extends StatelessWidget {
                 const Icon(Icons.arrow_forward_ios, color: Colors.white12, size: 16),
               ],
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 16),
 
-            // BODY: Valor Actual + Rendimiento unificado
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: colorTheme.withValues(alpha: 0.06),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: colorTheme.withValues(alpha: 0.1)),
+            // BODY: ROI en WBTC, WETH, USD
+            Row(
+              children: [
+                _buildRoiChip('WBTC', investor.roiWbtc, const Color(0xFFF7931A)),
+                const SizedBox(width: 8),
+                _buildRoiChip('WETH', investor.roiWeth, const Color(0xFF627EEA)),
+                const SizedBox(width: 8),
+                _buildRoiChip('USD', investor.roiUsd, AppColors.primaryViolet),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoiChip(String label, double roi, Color color) {
+    final isPositive = roi >= 0;
+    final roiColor = isPositive ? AppColors.success : AppColors.error;
+    final roiText = '${isPositive ? '+' : ''}${(roi * 100).toStringAsFixed(1)}%';
+
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withValues(alpha: 0.12)),
+        ),
+        child: Column(
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                color: color.withValues(alpha: 0.6),
+                fontSize: 10,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.8,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Valor actual
-                  const Text(
-                    'VALOR ACTUAL',
-                    style: TextStyle(
-                      color: Colors.white38,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    currencyFormat.format(currentValueUsd),
-                    style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w900),
-                  ),
-                  const SizedBox(height: 10),
-                  // Divider sutil
-                  Container(height: 1, color: Colors.white.withValues(alpha: 0.06)),
-                  const SizedBox(height: 10),
-                  // PNL + ROI en una sola fila
-                  Row(
-                    children: [
-                      Icon(isPositive ? Icons.trending_up : Icons.trending_down, size: 18, color: pnlColor),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${isPositive ? '+' : ''}${currencyFormat.format(pnlNetoUsd)}',
-                        style: TextStyle(
-                          color: pnlColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        'ROI',
-                        style: TextStyle(
-                          color: pnlColor.withValues(alpha: 0.6),
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        '${isPositive ? '+' : ''}${(investor.roiUsd * 100).toStringAsFixed(2)}%',
-                        style: TextStyle(color: pnlColor, fontSize: 16, fontWeight: FontWeight.w900),
-                      ),
-                    ],
-                  ),
-                ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              roiText,
+              style: TextStyle(
+                color: roiColor,
+                fontSize: 15,
+                fontWeight: FontWeight.w900,
               ),
             ),
           ],
