@@ -4,6 +4,7 @@ import 'package:botanico_fund_flutter/core/services/auth_service.dart';
 import 'package:botanico_fund_flutter/core/theme/app_colors.dart';
 import 'overview_view.dart';
 import 'investors_screen.dart';
+import 'bot_dashboard_view.dart';
 import 'settings_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _views = const [OverviewView(), InvestorsScreen(), SettingsScreen()];
+  final List<Widget> _views = const [OverviewView(), InvestorsScreen(), BotDashboardView(), SettingsScreen()];
 
   Future<void> _handleLogout(BuildContext context) async {
     final confirmed = await showDialog<bool>(
@@ -124,10 +125,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         const SizedBox(height: 16),
         _buildNavItem(index: 0, icon: Icons.dashboard_outlined, selectedIcon: Icons.dashboard, label: 'Resumen'),
         _buildNavItem(index: 1, icon: Icons.people_outlined, selectedIcon: Icons.people, label: 'Inversores'),
+        _buildNavItem(index: 2, icon: Icons.smart_toy_outlined, selectedIcon: Icons.smart_toy, label: 'Bot'),
         const Spacer(),
 
         // Configuración
-        _buildNavItem(index: 2, icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: 'Configuración'),
+        _buildNavItem(index: 3, icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: 'Configuración'),
         const SizedBox(height: 8),
 
         // Cerrar Sesión

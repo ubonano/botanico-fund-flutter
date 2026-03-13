@@ -5,6 +5,8 @@ import '../models/fund_config.dart';
 import '../models/investor.dart';
 import '../models/investor_snapshot.dart';
 import '../models/operation.dart';
+import '../models/bot_state.dart';
+import '../models/bot_snapshot.dart';
 
 class FundRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -95,5 +97,28 @@ class FundRepository {
   // Update Fund Config field
   Future<void> updateFundConfig(Map<String, dynamic> data) async {
     await _firestore.collection('config').doc('fund').update(data);
+  }
+
+  // Stream for Bot State (current)
+  Stream<BotState?> streamBotState() {
+    return _firestore.collection('bot_state').doc('current').snapshots().map((snapshot) {
+      if (snapshot.exists && snapshot.data() != null) {
+        return BotState.fromMap(snapshot.data()!);
+      }
+      return null;
+    });
+  }
+
+  // Stream for Bot Snapshots (last 30 days, ascending by timestamp)
+  Stream<List<BotSnapshot>> streamBotSnapshots() {
+    final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));
+    return _firestore
+        .collection('bot_snapshots')
+        .where('timestamp', isGreaterThan: Timestamp.fromDate(thirtyDaysAgo))
+        .orderBy('timestamp', descending: false)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) => BotSnapshot.fromMap(doc.id, doc.data())).toList();
+        });
   }
 }
