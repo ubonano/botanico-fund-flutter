@@ -109,6 +109,16 @@ class FundRepository {
     });
   }
 
+  // Stream for Bot Enabled status
+  Stream<bool> streamBotEnabled() {
+    return _firestore.collection('botanico_state').doc('bot_config').snapshots().map((snapshot) {
+      if (snapshot.exists && snapshot.data() != null) {
+        return snapshot.data()!['enabled'] == true;
+      }
+      return false;
+    });
+  }
+
   // Stream for Bot Snapshots (last 30 days, ascending by timestamp)
   Stream<List<BotSnapshot>> streamBotSnapshots() {
     final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));

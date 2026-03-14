@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../core/config/locator.dart';
 import '../../../core/services/fund_repository.dart';
+import '../../../core/services/fund_functions_service.dart';
 import '../../../core/models/bot_state.dart';
 import '../../../core/models/bot_snapshot.dart';
 import '../../../core/theme/app_colors.dart';
@@ -39,19 +40,25 @@ class BotDashboardView extends StatelessWidget {
                   ),
                 ],
               ),
-              StreamBuilder<BotState?>(
-                stream: fundRepo.streamBotState(),
-                builder: (context, snapshot) {
-                  final state = snapshot.data;
-                  if (state == null) return const SizedBox();
-                  return Row(
-                    children: [
-                      _buildPositionBadge(state.hasActivePosition),
-                      const SizedBox(width: 12),
-                      if (state.lastUpdateTimestamp != null) _buildTimeBadge(state.lastUpdateTimestamp!),
-                    ],
-                  );
-                },
+              Row(
+                children: [
+                  StreamBuilder<BotState?>(
+                    stream: fundRepo.streamBotState(),
+                    builder: (context, snapshot) {
+                      final state = snapshot.data;
+                      if (state == null) return const SizedBox();
+                      return Row(
+                        children: [
+                          _buildPositionBadge(state.hasActivePosition),
+                          const SizedBox(width: 12),
+                          if (state.lastUpdateTimestamp != null) _buildTimeBadge(state.lastUpdateTimestamp!),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 12),
+                  _BotToggleButton(),
+                ],
               ),
             ],
           ),
@@ -721,3 +728,101 @@ class _SectionTitle extends StatelessWidget {
     );
   }
 }
+
+// ══════════════════════════════════════════════════════════════════
+//  BOT TOGGLE BUTTON
+// ══════════════════════════════════════════════════════════════════
+
+class _BotToggleButton extends StatefulWidget {
+  @override
+  State<_BotToggleButton> createState() => _BotToggleButtonState();
+}
+
+class _BotToggleButtonState extends State<_BotToggleButton> {
+  bool _loading = false;
+
+  Future<void> _toggle(bool currentEnabled) async {
+    final newEnabled = !currentEnabled;
+    final action = newEnabled ? 'ENCENDER' : 'APAGAR';
+    final emoji = newEnabled ? '🟢' : '🔴';
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.surfaceDark,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('$emoji $action Bot', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        content: Text(
+          '¿Estás seguro de que querés ${action.toLowerCase()} el bot?',
+          style: const TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancelar', style: TextStyle(color: Colors.white54)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text('Confirmar', style: TextStyle(color: newEnabled ? AppColors.success : AppColors.error, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _loading = true);
+    try {
+      final functions = locator<FundFunctionsService>();
+      await functions.toggleBot(enabled: newEnabled);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.error),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fundRepo = locator<FundRepository>();
+
+    return StreamBuilder<bool>(
+      stream: fundRepo.streamBotEnabled(),
+      builder: (context, snapshot) {
+        final enabled = snapshot.data ?? false;
+        final color = enabled ? AppColors.success : AppColors.error;
+
+        return GestureDetector(
+          onTap: _loading ? null : () => _toggle(enabled),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: color.withValues(alpha: 0.25)),
+            ),
+            child: _loading
+                ? SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: color))
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.power_settings_new_rounded, color: color, size: 16),
+                      const SizedBox(width: 6),
+                      Text(
+                        enabled ? 'ON' : 'OFF',
+                        style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+          ),
+        );
+      },
+    );
+  }
+}
+

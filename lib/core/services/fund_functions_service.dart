@@ -46,4 +46,12 @@ class FundFunctionsService {
 
     return result.data.toString();
   }
+
+  Future<String> toggleBot({required bool enabled}) async {
+    final callable = _functions.httpsCallable('toggleBot');
+
+    final result = await callable.call({'enabled': enabled});
+
+    return result.data.toString();
+  }
 }
