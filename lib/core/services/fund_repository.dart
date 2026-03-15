@@ -119,6 +119,21 @@ class FundRepository {
     });
   }
 
+  // Stream for full Bot Config
+  Stream<Map<String, dynamic>> streamBotConfig() {
+    return _firestore.collection('botanico_state').doc('bot_config').snapshots().map((snapshot) {
+      if (snapshot.exists && snapshot.data() != null) {
+        return snapshot.data()!;
+      }
+      return <String, dynamic>{};
+    });
+  }
+
+  // Update Bot Config fields
+  Future<void> updateBotConfig(Map<String, dynamic> data) async {
+    await _firestore.collection('botanico_state').doc('bot_config').set(data, SetOptions(merge: true));
+  }
+
   // Stream for Bot Snapshots (last 30 days, ascending by timestamp)
   Stream<List<BotSnapshot>> streamBotSnapshots() {
     final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));

@@ -7,6 +7,7 @@ import '../../../core/services/fund_functions_service.dart';
 import '../../../core/models/bot_state.dart';
 import '../../../core/models/bot_snapshot.dart';
 import '../../../core/theme/app_colors.dart';
+import 'bot_config_dialog.dart';
 
 class BotDashboardView extends StatelessWidget {
   const BotDashboardView({super.key});
@@ -58,6 +59,8 @@ class BotDashboardView extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   _BotToggleButton(),
+                  const SizedBox(width: 8),
+                  _buildConfigButton(context),
                 ],
               ),
             ],
@@ -154,6 +157,25 @@ class BotDashboardView extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // ══════════════════════════════════════════════════════════════════
+  //  CONFIG BUTTON
+  // ══════════════════════════════════════════════════════════════════
+
+  Widget _buildConfigButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => showBotConfigDialog(context),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceDark,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppColors.borderDark),
+        ),
+        child: const Icon(Icons.tune_rounded, color: Colors.white54, size: 16),
       ),
     );
   }
