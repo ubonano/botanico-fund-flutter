@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:botanico_fund_flutter/core/config/locator.dart';
 import 'package:botanico_fund_flutter/core/services/auth_service.dart';
 import 'package:botanico_fund_flutter/core/services/fund_repository.dart';
@@ -190,8 +191,8 @@ class _InvestorHomeScreenState extends State<InvestorHomeScreen> with TickerProv
                                     roi: investor.roiWbtc,
                                     nominalVariation: variationWbtc,
                                     formatValue: (v) => cryptoFormat.format(v),
-                                    snapshots: snapshots,
-                                    roiExtractor: (s) => s.roiWbtc,
+                                    roiSpots: _buildRoiSpots(snapshots, (s) => s.roiWbtc),
+                                    spotTimestamps: snapshots.map((s) => s.timestamp).toList(),
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -207,8 +208,8 @@ class _InvestorHomeScreenState extends State<InvestorHomeScreen> with TickerProv
                                     roi: investor.roiWeth,
                                     nominalVariation: variationWeth,
                                     formatValue: (v) => cryptoFormat.format(v),
-                                    snapshots: snapshots,
-                                    roiExtractor: (s) => s.roiWeth,
+                                    roiSpots: _buildRoiSpots(snapshots, (s) => s.roiWeth),
+                                    spotTimestamps: snapshots.map((s) => s.timestamp).toList(),
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -224,8 +225,8 @@ class _InvestorHomeScreenState extends State<InvestorHomeScreen> with TickerProv
                                     roi: investor.roiUsd,
                                     nominalVariation: variationUsd,
                                     formatValue: (v) => currencyFormat.format(v),
-                                    snapshots: snapshots,
-                                    roiExtractor: (s) => s.roiUsd,
+                                    roiSpots: _buildRoiSpots(snapshots, (s) => s.roiUsd),
+                                    spotTimestamps: snapshots.map((s) => s.timestamp).toList(),
                                   ),
                                 ),
 
@@ -610,6 +611,11 @@ class _InvestorHomeScreenState extends State<InvestorHomeScreen> with TickerProv
         ],
       ),
     );
+  }
+
+  // ── ROI Spots helper ──
+  List<FlSpot> _buildRoiSpots(List<InvestorSnapshot> snapshots, double Function(InvestorSnapshot) extractor) {
+    return List.generate(snapshots.length, (i) => FlSpot(i.toDouble(), extractor(snapshots[i]) * 100));
   }
 
   // ── Logout ──

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
-import 'package:botanico_fund_flutter/core/models/investor_snapshot.dart';
 import 'package:botanico_fund_flutter/core/theme/app_colors.dart';
 
 /// Tarjeta reutilizable que muestra el estado de un token (WBTC, WETH o USD)
 /// con inversión neta, valor actual, ROI, variación nominal y gráfico
-/// de evolución del ROI basado en snapshots diarios del inversor.
+/// de evolución del ROI.
+///
+/// Es genérica: recibe spots pre-calculados para el gráfico, lo que permite
+/// usarla tanto desde el dashboard del inversor como del bot.
 class TokenCard extends StatelessWidget {
   final String tokenSymbol;
   final String tokenIcon;
@@ -16,8 +18,12 @@ class TokenCard extends StatelessWidget {
   final double roi;
   final double nominalVariation;
   final String Function(double) formatValue;
-  final List<InvestorSnapshot> snapshots;
-  final double Function(InvestorSnapshot) roiExtractor;
+
+  /// Spots pre-calculados para el gráfico de ROI (x = índice, y = ROI * 100).
+  final List<FlSpot> roiSpots;
+
+  /// Timestamps correspondientes a cada spot, para mostrar en tooltips.
+  final List<DateTime?> spotTimestamps;
 
   const TokenCard({
     super.key,
@@ -29,8 +35,8 @@ class TokenCard extends StatelessWidget {
     required this.roi,
     required this.nominalVariation,
     required this.formatValue,
-    required this.snapshots,
-    required this.roiExtractor,
+    required this.roiSpots,
+    required this.spotTimestamps,
   });
 
   @override
@@ -209,30 +215,22 @@ class TokenCard extends StatelessWidget {
   }
 
   Widget _buildChart() {
-    if (snapshots.isEmpty) {
+    if (roiSpots.length < 2) {
       return Center(
-        child: Text('Sin datos históricos', style: TextStyle(color: Colors.white.withValues(alpha: 0.2), fontSize: 11)),
+        child: Text(
+          roiSpots.isEmpty ? 'Sin datos históricos' : 'Datos insuficientes',
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.2), fontSize: 11),
+        ),
       );
     }
 
-    final spots = <FlSpot>[];
-    for (int i = 0; i < snapshots.length; i++) {
-      spots.add(FlSpot(i.toDouble(), roiExtractor(snapshots[i]) * 100));
-    }
-
-    if (spots.length < 2) {
-      return Center(
-        child: Text('Datos insuficientes', style: TextStyle(color: Colors.white.withValues(alpha: 0.2), fontSize: 11)),
-      );
-    }
-
-    final allY = spots.map((s) => s.y);
+    final allY = roiSpots.map((s) => s.y);
     final minY = allY.reduce((a, b) => a < b ? a : b);
     final maxY = allY.reduce((a, b) => a > b ? a : b);
     final range = maxY - minY;
     final padding = range == 0 ? 1.0 : range * 0.2;
 
-    final lastRoi = spots.last.y;
+    final lastRoi = roiSpots.last.y;
     final lineColor = lastRoi >= 0 ? AppColors.success : AppColors.error;
 
     return LineChart(
@@ -241,18 +239,18 @@ class TokenCard extends StatelessWidget {
         titlesData: const FlTitlesData(show: false),
         borderData: FlBorderData(show: false),
         clipData: const FlClipData.all(),
-        minX: spots.first.x,
-        maxX: spots.last.x,
+        minX: roiSpots.first.x,
+        maxX: roiSpots.last.x,
         minY: minY - padding,
         maxY: maxY + padding,
         lineTouchData: LineTouchData(
           enabled: true,
           touchTooltipData: LineTouchTooltipData(
-            getTooltipItems: (spots) {
-              return spots.map((spot) {
-                final snapIndex = spot.x.toInt().clamp(0, snapshots.length - 1);
-                final snap = snapshots[snapIndex];
-                final dateStr = snap.timestamp != null ? DateFormat('dd MMM').format(snap.timestamp!) : '';
+            getTooltipItems: (touchedSpots) {
+              return touchedSpots.map((spot) {
+                final snapIndex = spot.x.toInt().clamp(0, spotTimestamps.length - 1);
+                final ts = snapIndex < spotTimestamps.length ? spotTimestamps[snapIndex] : null;
+                final dateStr = ts != null ? DateFormat('dd MMM').format(ts) : '';
                 return LineTooltipItem(
                   '${spot.y >= 0 ? '+' : ''}${spot.y.toStringAsFixed(2)}%\n$dateStr',
                   TextStyle(
@@ -272,7 +270,7 @@ class TokenCard extends StatelessWidget {
         ),
         lineBarsData: [
           LineChartBarData(
-            spots: spots,
+            spots: roiSpots,
             isCurved: true,
             curveSmoothness: 0.3,
             color: lineColor.withValues(alpha: 0.85),

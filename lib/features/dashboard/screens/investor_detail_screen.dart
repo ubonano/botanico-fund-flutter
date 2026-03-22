@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../../../../core/config/locator.dart';
 import '../../../../core/services/fund_repository.dart';
 import '../../../../core/models/investor.dart';
@@ -98,8 +99,8 @@ class InvestorDetailDialog extends StatelessWidget {
                                             roi: investor.roiWbtc,
                                             nominalVariation: variationWbtc,
                                             formatValue: (v) => cryptoFormat.format(v),
-                                            snapshots: snapshots,
-                                            roiExtractor: (s) => s.roiWbtc,
+                                            roiSpots: _buildRoiSpots(snapshots, (s) => s.roiWbtc),
+                                            spotTimestamps: snapshots.map((s) => s.timestamp).toList(),
                                           ),
                                           const SizedBox(height: 12),
                                           TokenCard(
@@ -111,8 +112,8 @@ class InvestorDetailDialog extends StatelessWidget {
                                             roi: investor.roiWeth,
                                             nominalVariation: variationWeth,
                                             formatValue: (v) => cryptoFormat.format(v),
-                                            snapshots: snapshots,
-                                            roiExtractor: (s) => s.roiWeth,
+                                            roiSpots: _buildRoiSpots(snapshots, (s) => s.roiWeth),
+                                            spotTimestamps: snapshots.map((s) => s.timestamp).toList(),
                                           ),
                                           const SizedBox(height: 12),
                                           TokenCard(
@@ -124,8 +125,8 @@ class InvestorDetailDialog extends StatelessWidget {
                                             roi: investor.roiUsd,
                                             nominalVariation: variationUsd,
                                             formatValue: (v) => currencyFormat.format(v),
-                                            snapshots: snapshots,
-                                            roiExtractor: (s) => s.roiUsd,
+                                            roiSpots: _buildRoiSpots(snapshots, (s) => s.roiUsd),
+                                            spotTimestamps: snapshots.map((s) => s.timestamp).toList(),
                                           ),
                                         ],
                                       ),
@@ -303,6 +304,10 @@ class InvestorDetailDialog extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<FlSpot> _buildRoiSpots(List<InvestorSnapshot> snapshots, double Function(InvestorSnapshot) extractor) {
+    return List.generate(snapshots.length, (i) => FlSpot(i.toDouble(), extractor(snapshots[i]) * 100));
   }
 
   /// Retorna (color, icono, etiqueta) según el tipo de operación.
